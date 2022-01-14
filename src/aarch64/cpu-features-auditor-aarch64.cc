@@ -35,7 +35,34 @@ namespace vixl {
 namespace aarch64 {
 
 CPUFeaturesAuditor::FormToVisitorFnMap CPUFeaturesAuditor::form_to_visitor_ = {
-    DEFAULT_FORM_TO_VISITOR_MAP(CPUFeaturesAuditor)};
+    DEFAULT_FORM_TO_VISITOR_MAP(CPUFeaturesAuditor),
+    SIM_AUD_VISITOR_MAP(CPUFeaturesAuditor),
+    {"fcmla_asimdelem_c_h", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"fcmla_asimdelem_c_s", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"fmlal2_asimdelem_lh", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"fmlal_asimdelem_lh", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"fmla_asimdelem_rh_h", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"fmla_asimdelem_r_sd", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"fmlsl2_asimdelem_lh", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"fmlsl_asimdelem_lh", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"fmls_asimdelem_rh_h", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"fmls_asimdelem_r_sd", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"fmulx_asimdelem_rh_h", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"fmulx_asimdelem_r_sd", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"fmul_asimdelem_rh_h", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"fmul_asimdelem_r_sd", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"sdot_asimdelem_d", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"smlal_asimdelem_l", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"smlsl_asimdelem_l", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"smull_asimdelem_l", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"sqdmlal_asimdelem_l", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"sqdmlsl_asimdelem_l", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"sqdmull_asimdelem_l", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"udot_asimdelem_d", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"umlal_asimdelem_l", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"umlsl_asimdelem_l", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+    {"umull_asimdelem_l", &CPUFeaturesAuditor::VisitNEONByIndexedElement},
+};
 
 // Every instruction must update last_instruction_, even if only to clear it,
 // and every instruction must also update seen_ once it has been fully handled.
@@ -1189,8 +1216,8 @@ void CPUFeaturesAuditor::VisitPCRelAddressing(const Instruction* instr) {
   V(SVEIntMulImm_Unpredicated)                                   \
   V(SVEIntMulVectors_Predicated)                                 \
   V(SVELoadAndBroadcastElement)                                  \
-  V(SVELoadAndBroadcastQuadword_ScalarPlusImm)                   \
-  V(SVELoadAndBroadcastQuadword_ScalarPlusScalar)                \
+  V(SVELoadAndBroadcastQOWord_ScalarPlusImm)                     \
+  V(SVELoadAndBroadcastQOWord_ScalarPlusScalar)                  \
   V(SVELoadMultipleStructures_ScalarPlusImm)                     \
   V(SVELoadMultipleStructures_ScalarPlusScalar)                  \
   V(SVELoadPredicateRegister)                                    \
@@ -1659,6 +1686,34 @@ void CPUFeaturesAuditor::Visit(Metadata* metadata, const Instruction* instr) {
          CPUFeatures(CPUFeatures::kNEON, CPUFeatures::kI8MM)},
         {"usmmla_asimdsame2_g",
          CPUFeatures(CPUFeatures::kNEON, CPUFeatures::kI8MM)},
+        {"ld1row_z_p_bi_u32",
+         CPUFeatures(CPUFeatures::kSVE, CPUFeatures::kSVEF64MM)},
+        {"ld1row_z_p_br_contiguous",
+         CPUFeatures(CPUFeatures::kSVE, CPUFeatures::kSVEF64MM)},
+        {"ld1rod_z_p_bi_u64",
+         CPUFeatures(CPUFeatures::kSVE, CPUFeatures::kSVEF64MM)},
+        {"ld1rod_z_p_br_contiguous",
+         CPUFeatures(CPUFeatures::kSVE, CPUFeatures::kSVEF64MM)},
+        {"ld1rob_z_p_bi_u8",
+         CPUFeatures(CPUFeatures::kSVE, CPUFeatures::kSVEF64MM)},
+        {"ld1rob_z_p_br_contiguous",
+         CPUFeatures(CPUFeatures::kSVE, CPUFeatures::kSVEF64MM)},
+        {"ld1roh_z_p_bi_u16",
+         CPUFeatures(CPUFeatures::kSVE, CPUFeatures::kSVEF64MM)},
+        {"ld1roh_z_p_br_contiguous",
+         CPUFeatures(CPUFeatures::kSVE, CPUFeatures::kSVEF64MM)},
+        {"usdot_asimdsame2_d",
+         CPUFeatures(CPUFeatures::kNEON, CPUFeatures::kI8MM)},
+        {"sudot_asimdelem_d",
+         CPUFeatures(CPUFeatures::kNEON, CPUFeatures::kI8MM)},
+        {"usdot_asimdelem_d",
+         CPUFeatures(CPUFeatures::kNEON, CPUFeatures::kI8MM)},
+        {"usdot_z_zzz_s",
+         CPUFeatures(CPUFeatures::kSVE, CPUFeatures::kSVEI8MM)},
+        {"usdot_z_zzzi_s",
+         CPUFeatures(CPUFeatures::kSVE, CPUFeatures::kSVEI8MM)},
+        {"sudot_z_zzzi_s",
+         CPUFeatures(CPUFeatures::kSVE, CPUFeatures::kSVEI8MM)},
     };
 
     if (features.count(form) > 0) {

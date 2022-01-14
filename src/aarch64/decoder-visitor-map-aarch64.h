@@ -352,21 +352,21 @@
       {"ld1rh_z_p_bi_u32", &VISITORCLASS::VisitSVELoadAndBroadcastElement},    \
       {"ld1rh_z_p_bi_u64", &VISITORCLASS::VisitSVELoadAndBroadcastElement},    \
       {"ld1rqb_z_p_bi_u8",                                                     \
-       &VISITORCLASS::VisitSVELoadAndBroadcastQuadword_ScalarPlusImm},         \
+       &VISITORCLASS::VisitSVELoadAndBroadcastQOWord_ScalarPlusImm},           \
       {"ld1rqb_z_p_br_contiguous",                                             \
-       &VISITORCLASS::VisitSVELoadAndBroadcastQuadword_ScalarPlusScalar},      \
+       &VISITORCLASS::VisitSVELoadAndBroadcastQOWord_ScalarPlusScalar},        \
       {"ld1rqd_z_p_bi_u64",                                                    \
-       &VISITORCLASS::VisitSVELoadAndBroadcastQuadword_ScalarPlusImm},         \
+       &VISITORCLASS::VisitSVELoadAndBroadcastQOWord_ScalarPlusImm},           \
       {"ld1rqd_z_p_br_contiguous",                                             \
-       &VISITORCLASS::VisitSVELoadAndBroadcastQuadword_ScalarPlusScalar},      \
+       &VISITORCLASS::VisitSVELoadAndBroadcastQOWord_ScalarPlusScalar},        \
       {"ld1rqh_z_p_bi_u16",                                                    \
-       &VISITORCLASS::VisitSVELoadAndBroadcastQuadword_ScalarPlusImm},         \
+       &VISITORCLASS::VisitSVELoadAndBroadcastQOWord_ScalarPlusImm},           \
       {"ld1rqh_z_p_br_contiguous",                                             \
-       &VISITORCLASS::VisitSVELoadAndBroadcastQuadword_ScalarPlusScalar},      \
+       &VISITORCLASS::VisitSVELoadAndBroadcastQOWord_ScalarPlusScalar},        \
       {"ld1rqw_z_p_bi_u32",                                                    \
-       &VISITORCLASS::VisitSVELoadAndBroadcastQuadword_ScalarPlusImm},         \
+       &VISITORCLASS::VisitSVELoadAndBroadcastQOWord_ScalarPlusImm},           \
       {"ld1rqw_z_p_br_contiguous",                                             \
-       &VISITORCLASS::VisitSVELoadAndBroadcastQuadword_ScalarPlusScalar},      \
+       &VISITORCLASS::VisitSVELoadAndBroadcastQOWord_ScalarPlusScalar},        \
       {"ld1rsb_z_p_bi_s16", &VISITORCLASS::VisitSVELoadAndBroadcastElement},   \
       {"ld1rsb_z_p_bi_s32", &VISITORCLASS::VisitSVELoadAndBroadcastElement},   \
       {"ld1rsb_z_p_bi_s64", &VISITORCLASS::VisitSVELoadAndBroadcastElement},   \
@@ -1989,72 +1989,6 @@
       {"movn_64_movewide", &VISITORCLASS::VisitMoveWideImmediate},             \
       {"movz_32_movewide", &VISITORCLASS::VisitMoveWideImmediate},             \
       {"movz_64_movewide", &VISITORCLASS::VisitMoveWideImmediate},             \
-      {"abs_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                   \
-      {"cls_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                   \
-      {"clz_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                   \
-      {"cmeq_asimdmisc_z", &VISITORCLASS::VisitNEON2RegMisc},                  \
-      {"cmge_asimdmisc_z", &VISITORCLASS::VisitNEON2RegMisc},                  \
-      {"cmgt_asimdmisc_z", &VISITORCLASS::VisitNEON2RegMisc},                  \
-      {"cmle_asimdmisc_z", &VISITORCLASS::VisitNEON2RegMisc},                  \
-      {"cmlt_asimdmisc_z", &VISITORCLASS::VisitNEON2RegMisc},                  \
-      {"cnt_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                   \
-      {"fabs_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                  \
-      {"fcmeq_asimdmisc_fz", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fcmge_asimdmisc_fz", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fcmgt_asimdmisc_fz", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fcmle_asimdmisc_fz", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fcmlt_asimdmisc_fz", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fcvtas_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fcvtau_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fcvtl_asimdmisc_l", &VISITORCLASS::VisitNEON2RegMisc},                 \
-      {"fcvtms_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fcvtmu_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fcvtns_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fcvtnu_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fcvtn_asimdmisc_n", &VISITORCLASS::VisitNEON2RegMisc},                 \
-      {"fcvtps_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fcvtpu_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fcvtxn_asimdmisc_n", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fcvtzs_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fcvtzu_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"fneg_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                  \
-      {"frecpe_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"frint32x_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},              \
-      {"frint32z_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},              \
-      {"frint64x_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},              \
-      {"frint64z_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},              \
-      {"frinta_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"frinti_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"frintm_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"frintn_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"frintp_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"frintx_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"frintz_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"frsqrte_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},               \
-      {"fsqrt_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
-      {"neg_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                   \
-      {"not_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                   \
-      {"rbit_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                  \
-      {"rev16_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
-      {"rev32_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
-      {"rev64_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
-      {"sadalp_asimdmisc_p", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"saddlp_asimdmisc_p", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"scvtf_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
-      {"shll_asimdmisc_s", &VISITORCLASS::VisitNEON2RegMisc},                  \
-      {"sqabs_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
-      {"sqneg_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
-      {"sqxtn_asimdmisc_n", &VISITORCLASS::VisitNEON2RegMisc},                 \
-      {"sqxtun_asimdmisc_n", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"suqadd_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"uadalp_asimdmisc_p", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"uaddlp_asimdmisc_p", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"ucvtf_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
-      {"uqxtn_asimdmisc_n", &VISITORCLASS::VisitNEON2RegMisc},                 \
-      {"urecpe_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"ursqrte_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},               \
-      {"usqadd_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
-      {"xtn_asimdmisc_n", &VISITORCLASS::VisitNEON2RegMisc},                   \
       {"fabs_asimdmiscfp16_r", &VISITORCLASS::VisitNEON2RegMiscFP16},          \
       {"fcmeq_asimdmiscfp16_fz", &VISITORCLASS::VisitNEON2RegMiscFP16},        \
       {"fcmge_asimdmiscfp16_fz", &VISITORCLASS::VisitNEON2RegMiscFP16},        \
@@ -2112,18 +2046,12 @@
       {"usubw_asimddiff_w", &VISITORCLASS::VisitNEON3Different},               \
       {"addp_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
       {"add_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
-      {"and_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
-      {"bic_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
-      {"bif_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
-      {"bit_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
-      {"bsl_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
       {"cmeq_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
       {"cmge_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
       {"cmgt_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
       {"cmhi_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
       {"cmhs_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
       {"cmtst_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
-      {"eor_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
       {"fabd_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
       {"facge_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
       {"facgt_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
@@ -2141,54 +2069,26 @@
       {"fminnm_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                \
       {"fminp_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
       {"fmin_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
-      {"fmlal2_asimdsame_f", &VISITORCLASS::VisitNEON3Same},                   \
-      {"fmlal_asimdsame_f", &VISITORCLASS::VisitNEON3Same},                    \
       {"fmla_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
-      {"fmlsl2_asimdsame_f", &VISITORCLASS::VisitNEON3Same},                   \
-      {"fmlsl_asimdsame_f", &VISITORCLASS::VisitNEON3Same},                    \
       {"fmls_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
       {"fmulx_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
       {"fmul_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
       {"frecps_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                \
       {"frsqrts_asimdsame_only", &VISITORCLASS::VisitNEON3Same},               \
       {"fsub_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
-      {"mla_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
-      {"mls_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
-      {"mul_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
-      {"orn_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
-      {"orr_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
-      {"pmul_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
-      {"saba_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
-      {"sabd_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
-      {"shadd_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
-      {"shsub_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
-      {"smaxp_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
-      {"smax_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
-      {"sminp_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
-      {"smin_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
       {"sqadd_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
       {"sqdmulh_asimdsame_only", &VISITORCLASS::VisitNEON3Same},               \
       {"sqrdmulh_asimdsame_only", &VISITORCLASS::VisitNEON3Same},              \
       {"sqrshl_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                \
       {"sqshl_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
       {"sqsub_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
-      {"srhadd_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                \
       {"srshl_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
       {"sshl_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
       {"sub_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
-      {"uaba_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
-      {"uabd_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
-      {"uhadd_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
-      {"uhsub_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
-      {"umaxp_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
-      {"umax_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
-      {"uminp_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
-      {"umin_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
       {"uqadd_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
       {"uqrshl_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                \
       {"uqshl_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
       {"uqsub_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
-      {"urhadd_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                \
       {"urshl_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
       {"ushl_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
       {"fcadd_asimdsame2_c", &VISITORCLASS::VisitNEON3SameExtra},              \
@@ -2222,52 +2122,19 @@
       {"frsqrts_asimdsamefp16_only", &VISITORCLASS::VisitNEON3SameFP16},       \
       {"fsub_asimdsamefp16_only", &VISITORCLASS::VisitNEON3SameFP16},          \
       {"addv_asimdall_only", &VISITORCLASS::VisitNEONAcrossLanes},             \
-      {"fmaxnmv_asimdall_only_h", &VISITORCLASS::VisitNEONAcrossLanes},        \
-      {"fmaxnmv_asimdall_only_sd", &VISITORCLASS::VisitNEONAcrossLanes},       \
-      {"fmaxv_asimdall_only_h", &VISITORCLASS::VisitNEONAcrossLanes},          \
-      {"fmaxv_asimdall_only_sd", &VISITORCLASS::VisitNEONAcrossLanes},         \
-      {"fminnmv_asimdall_only_h", &VISITORCLASS::VisitNEONAcrossLanes},        \
-      {"fminnmv_asimdall_only_sd", &VISITORCLASS::VisitNEONAcrossLanes},       \
-      {"fminv_asimdall_only_h", &VISITORCLASS::VisitNEONAcrossLanes},          \
-      {"fminv_asimdall_only_sd", &VISITORCLASS::VisitNEONAcrossLanes},         \
       {"saddlv_asimdall_only", &VISITORCLASS::VisitNEONAcrossLanes},           \
       {"smaxv_asimdall_only", &VISITORCLASS::VisitNEONAcrossLanes},            \
       {"sminv_asimdall_only", &VISITORCLASS::VisitNEONAcrossLanes},            \
       {"uaddlv_asimdall_only", &VISITORCLASS::VisitNEONAcrossLanes},           \
       {"umaxv_asimdall_only", &VISITORCLASS::VisitNEONAcrossLanes},            \
       {"uminv_asimdall_only", &VISITORCLASS::VisitNEONAcrossLanes},            \
-      {"fcmla_asimdelem_c_h", &VISITORCLASS::VisitNEONByIndexedElement},       \
-      {"fcmla_asimdelem_c_s", &VISITORCLASS::VisitNEONByIndexedElement},       \
-      {"fmlal2_asimdelem_lh", &VISITORCLASS::VisitNEONByIndexedElement},       \
-      {"fmlal_asimdelem_lh", &VISITORCLASS::VisitNEONByIndexedElement},        \
-      {"fmla_asimdelem_rh_h", &VISITORCLASS::VisitNEONByIndexedElement},       \
-      {"fmla_asimdelem_r_sd", &VISITORCLASS::VisitNEONByIndexedElement},       \
-      {"fmlsl2_asimdelem_lh", &VISITORCLASS::VisitNEONByIndexedElement},       \
-      {"fmlsl_asimdelem_lh", &VISITORCLASS::VisitNEONByIndexedElement},        \
-      {"fmls_asimdelem_rh_h", &VISITORCLASS::VisitNEONByIndexedElement},       \
-      {"fmls_asimdelem_r_sd", &VISITORCLASS::VisitNEONByIndexedElement},       \
-      {"fmulx_asimdelem_rh_h", &VISITORCLASS::VisitNEONByIndexedElement},      \
-      {"fmulx_asimdelem_r_sd", &VISITORCLASS::VisitNEONByIndexedElement},      \
-      {"fmul_asimdelem_rh_h", &VISITORCLASS::VisitNEONByIndexedElement},       \
-      {"fmul_asimdelem_r_sd", &VISITORCLASS::VisitNEONByIndexedElement},       \
       {"mla_asimdelem_r", &VISITORCLASS::VisitNEONByIndexedElement},           \
       {"mls_asimdelem_r", &VISITORCLASS::VisitNEONByIndexedElement},           \
       {"mul_asimdelem_r", &VISITORCLASS::VisitNEONByIndexedElement},           \
-      {"sdot_asimdelem_d", &VISITORCLASS::VisitNEONByIndexedElement},          \
-      {"smlal_asimdelem_l", &VISITORCLASS::VisitNEONByIndexedElement},         \
-      {"smlsl_asimdelem_l", &VISITORCLASS::VisitNEONByIndexedElement},         \
-      {"smull_asimdelem_l", &VISITORCLASS::VisitNEONByIndexedElement},         \
-      {"sqdmlal_asimdelem_l", &VISITORCLASS::VisitNEONByIndexedElement},       \
-      {"sqdmlsl_asimdelem_l", &VISITORCLASS::VisitNEONByIndexedElement},       \
       {"sqdmulh_asimdelem_r", &VISITORCLASS::VisitNEONByIndexedElement},       \
-      {"sqdmull_asimdelem_l", &VISITORCLASS::VisitNEONByIndexedElement},       \
       {"sqrdmlah_asimdelem_r", &VISITORCLASS::VisitNEONByIndexedElement},      \
       {"sqrdmlsh_asimdelem_r", &VISITORCLASS::VisitNEONByIndexedElement},      \
       {"sqrdmulh_asimdelem_r", &VISITORCLASS::VisitNEONByIndexedElement},      \
-      {"udot_asimdelem_d", &VISITORCLASS::VisitNEONByIndexedElement},          \
-      {"umlal_asimdelem_l", &VISITORCLASS::VisitNEONByIndexedElement},         \
-      {"umlsl_asimdelem_l", &VISITORCLASS::VisitNEONByIndexedElement},         \
-      {"umull_asimdelem_l", &VISITORCLASS::VisitNEONByIndexedElement},         \
       {"dup_asimdins_dr_r", &VISITORCLASS::VisitNEONCopy},                     \
       {"dup_asimdins_dv_v", &VISITORCLASS::VisitNEONCopy},                     \
       {"ins_asimdins_ir_r", &VISITORCLASS::VisitNEONCopy},                     \
@@ -2549,39 +2416,11 @@
       {"uzp2_asimdperm_only", &VISITORCLASS::VisitNEONPerm},                   \
       {"zip1_asimdperm_only", &VISITORCLASS::VisitNEONPerm},                   \
       {"zip2_asimdperm_only", &VISITORCLASS::VisitNEONPerm},                   \
-      {"abs_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},             \
-      {"cmeq_asisdmisc_z", &VISITORCLASS::VisitNEONScalar2RegMisc},            \
-      {"cmge_asisdmisc_z", &VISITORCLASS::VisitNEONScalar2RegMisc},            \
-      {"cmgt_asisdmisc_z", &VISITORCLASS::VisitNEONScalar2RegMisc},            \
-      {"cmle_asisdmisc_z", &VISITORCLASS::VisitNEONScalar2RegMisc},            \
-      {"cmlt_asisdmisc_z", &VISITORCLASS::VisitNEONScalar2RegMisc},            \
-      {"fcmeq_asisdmisc_fz", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"fcmge_asisdmisc_fz", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"fcmgt_asisdmisc_fz", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"fcmle_asisdmisc_fz", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"fcmlt_asisdmisc_fz", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"fcvtas_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"fcvtau_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"fcvtms_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"fcvtmu_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"fcvtns_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"fcvtnu_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"fcvtps_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"fcvtpu_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"fcvtxn_asisdmisc_n", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"fcvtzs_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"fcvtzu_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"frecpe_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"frecpx_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"frsqrte_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},         \
-      {"neg_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},             \
-      {"scvtf_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},           \
       {"sqabs_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},           \
       {"sqneg_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},           \
       {"sqxtn_asisdmisc_n", &VISITORCLASS::VisitNEONScalar2RegMisc},           \
       {"sqxtun_asisdmisc_n", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
       {"suqadd_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
-      {"ucvtf_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},           \
       {"uqxtn_asisdmisc_n", &VISITORCLASS::VisitNEONScalar2RegMisc},           \
       {"usqadd_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
       {"fcmeq_asisdmiscfp16_fz", &VISITORCLASS::VisitNEONScalar2RegMiscFP16},  \
@@ -2607,22 +2446,6 @@
       {"sqdmlal_asisddiff_only", &VISITORCLASS::VisitNEONScalar3Diff},         \
       {"sqdmlsl_asisddiff_only", &VISITORCLASS::VisitNEONScalar3Diff},         \
       {"sqdmull_asisddiff_only", &VISITORCLASS::VisitNEONScalar3Diff},         \
-      {"add_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},             \
-      {"cmeq_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},            \
-      {"cmge_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},            \
-      {"cmgt_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},            \
-      {"cmhi_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},            \
-      {"cmhs_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},            \
-      {"cmtst_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
-      {"fabd_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},            \
-      {"facge_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
-      {"facgt_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
-      {"fcmeq_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
-      {"fcmge_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
-      {"fcmgt_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
-      {"fmulx_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
-      {"frecps_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},          \
-      {"frsqrts_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},         \
       {"sqadd_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
       {"sqdmulh_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},         \
       {"sqrdmulh_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},        \
@@ -2631,15 +2454,12 @@
       {"sqsub_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
       {"srshl_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
       {"sshl_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},            \
-      {"sub_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},             \
       {"uqadd_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
       {"uqrshl_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},          \
       {"uqshl_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
       {"uqsub_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
       {"urshl_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
       {"ushl_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},            \
-      {"sqrdmlah_asisdsame2_only", &VISITORCLASS::VisitNEONScalar3SameExtra},  \
-      {"sqrdmlsh_asisdsame2_only", &VISITORCLASS::VisitNEONScalar3SameExtra},  \
       {"fabd_asisdsamefp16_only", &VISITORCLASS::VisitNEONScalar3SameFP16},    \
       {"facge_asisdsamefp16_only", &VISITORCLASS::VisitNEONScalar3SameFP16},   \
       {"facgt_asisdsamefp16_only", &VISITORCLASS::VisitNEONScalar3SameFP16},   \
@@ -2649,20 +2469,7 @@
       {"fmulx_asisdsamefp16_only", &VISITORCLASS::VisitNEONScalar3SameFP16},   \
       {"frecps_asisdsamefp16_only", &VISITORCLASS::VisitNEONScalar3SameFP16},  \
       {"frsqrts_asisdsamefp16_only", &VISITORCLASS::VisitNEONScalar3SameFP16}, \
-      {"fmla_asisdelem_rh_h", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
-      {"fmla_asisdelem_r_sd", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
-      {"fmls_asisdelem_rh_h", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
-      {"fmls_asisdelem_r_sd", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
-      {"fmulx_asisdelem_rh_h",                                                 \
-       &VISITORCLASS::VisitNEONScalarByIndexedElement},                        \
-      {"fmulx_asisdelem_r_sd",                                                 \
-       &VISITORCLASS::VisitNEONScalarByIndexedElement},                        \
-      {"fmul_asisdelem_rh_h", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
-      {"fmul_asisdelem_r_sd", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
-      {"sqdmlal_asisdelem_l", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
-      {"sqdmlsl_asisdelem_l", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
       {"sqdmulh_asisdelem_r", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
-      {"sqdmull_asisdelem_l", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
       {"sqrdmlah_asisdelem_r",                                                 \
        &VISITORCLASS::VisitNEONScalarByIndexedElement},                        \
       {"sqrdmlsh_asisdelem_r",                                                 \
@@ -2684,55 +2491,15 @@
       {"fcvtzs_asisdshf_c", &VISITORCLASS::VisitNEONScalarShiftImmediate},     \
       {"fcvtzu_asisdshf_c", &VISITORCLASS::VisitNEONScalarShiftImmediate},     \
       {"scvtf_asisdshf_c", &VISITORCLASS::VisitNEONScalarShiftImmediate},      \
-      {"shl_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},        \
-      {"sli_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},        \
-      {"sqrshrn_asisdshf_n", &VISITORCLASS::VisitNEONScalarShiftImmediate},    \
-      {"sqrshrun_asisdshf_n", &VISITORCLASS::VisitNEONScalarShiftImmediate},   \
       {"sqshlu_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},     \
       {"sqshl_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},      \
-      {"sqshrn_asisdshf_n", &VISITORCLASS::VisitNEONScalarShiftImmediate},     \
-      {"sqshrun_asisdshf_n", &VISITORCLASS::VisitNEONScalarShiftImmediate},    \
-      {"sri_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},        \
-      {"srshr_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},      \
-      {"srsra_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},      \
-      {"sshr_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},       \
-      {"ssra_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},       \
       {"ucvtf_asisdshf_c", &VISITORCLASS::VisitNEONScalarShiftImmediate},      \
-      {"uqrshrn_asisdshf_n", &VISITORCLASS::VisitNEONScalarShiftImmediate},    \
       {"uqshl_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},      \
-      {"uqshrn_asisdshf_n", &VISITORCLASS::VisitNEONScalarShiftImmediate},     \
-      {"urshr_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},      \
-      {"ursra_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},      \
-      {"ushr_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},       \
-      {"usra_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},       \
-      {"fcvtzs_asimdshf_c", &VISITORCLASS::VisitNEONShiftImmediate},           \
-      {"fcvtzu_asimdshf_c", &VISITORCLASS::VisitNEONShiftImmediate},           \
-      {"rshrn_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},            \
-      {"scvtf_asimdshf_c", &VISITORCLASS::VisitNEONShiftImmediate},            \
-      {"shl_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},              \
-      {"shrn_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},             \
-      {"sli_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},              \
-      {"sqrshrn_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},          \
-      {"sqrshrun_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},         \
       {"sqshlu_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},           \
       {"sqshl_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},            \
-      {"sqshrn_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},           \
-      {"sqshrun_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},          \
-      {"sri_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},              \
-      {"srshr_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},            \
-      {"srsra_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},            \
-      {"sshll_asimdshf_l", &VISITORCLASS::VisitNEONShiftImmediate},            \
-      {"sshr_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},             \
-      {"ssra_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},             \
-      {"ucvtf_asimdshf_c", &VISITORCLASS::VisitNEONShiftImmediate},            \
-      {"uqrshrn_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},          \
       {"uqshl_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},            \
-      {"uqshrn_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},           \
-      {"urshr_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},            \
-      {"ursra_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},            \
-      {"ushll_asimdshf_l", &VISITORCLASS::VisitNEONShiftImmediate},            \
-      {"ushr_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},             \
-      {"usra_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},             \
+      {"shl_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},              \
+      {"sli_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},              \
       {"tbl_asimdtbl_l1_1", &VISITORCLASS::VisitNEONTable},                    \
       {"tbl_asimdtbl_l2_2", &VISITORCLASS::VisitNEONTable},                    \
       {"tbl_asimdtbl_l3_3", &VISITORCLASS::VisitNEONTable},                    \
@@ -2744,48 +2511,20 @@
       {"adrp_only_pcreladdr", &VISITORCLASS::VisitPCRelAddressing},            \
       {"adr_only_pcreladdr", &VISITORCLASS::VisitPCRelAddressing},             \
       {"rmif_only_rmif", &VISITORCLASS::VisitRotateRightIntoFlags},            \
-      {"autia1716_hi_hints", &VISITORCLASS::VisitSystem},                      \
-      {"autiasp_hi_hints", &VISITORCLASS::VisitSystem},                        \
-      {"autiaz_hi_hints", &VISITORCLASS::VisitSystem},                         \
-      {"autib1716_hi_hints", &VISITORCLASS::VisitSystem},                      \
-      {"autibsp_hi_hints", &VISITORCLASS::VisitSystem},                        \
-      {"autibz_hi_hints", &VISITORCLASS::VisitSystem},                         \
-      {"axflag_m_pstate", &VISITORCLASS::VisitSystem},                         \
       {"bti_hb_hints", &VISITORCLASS::VisitSystem},                            \
-      {"cfinv_m_pstate", &VISITORCLASS::VisitSystem},                          \
       {"clrex_bn_barriers", &VISITORCLASS::VisitSystem},                       \
-      {"csdb_hi_hints", &VISITORCLASS::VisitSystem},                           \
-      {"dgh_hi_hints", &VISITORCLASS::VisitSystem},                            \
       {"dmb_bo_barriers", &VISITORCLASS::VisitSystem},                         \
       {"dsb_bo_barriers", &VISITORCLASS::VisitSystem},                         \
-      {"esb_hi_hints", &VISITORCLASS::VisitSystem},                            \
       {"hint_hm_hints", &VISITORCLASS::VisitSystem},                           \
-      {"isb_bi_barriers", &VISITORCLASS::VisitSystem},                         \
       {"mrs_rs_systemmove", &VISITORCLASS::VisitSystem},                       \
       {"msr_si_pstate", &VISITORCLASS::VisitSystem},                           \
       {"msr_sr_systemmove", &VISITORCLASS::VisitSystem},                       \
-      {"nop_hi_hints", &VISITORCLASS::VisitSystem},                            \
-      {"pacia1716_hi_hints", &VISITORCLASS::VisitSystem},                      \
-      {"paciasp_hi_hints", &VISITORCLASS::VisitSystem},                        \
-      {"paciaz_hi_hints", &VISITORCLASS::VisitSystem},                         \
-      {"pacib1716_hi_hints", &VISITORCLASS::VisitSystem},                      \
-      {"pacibsp_hi_hints", &VISITORCLASS::VisitSystem},                        \
-      {"pacibz_hi_hints", &VISITORCLASS::VisitSystem},                         \
       {"psb_hc_hints", &VISITORCLASS::VisitSystem},                            \
-      {"pssbb_only_barriers", &VISITORCLASS::VisitSystem},                     \
       {"sb_only_barriers", &VISITORCLASS::VisitSystem},                        \
-      {"sevl_hi_hints", &VISITORCLASS::VisitSystem},                           \
-      {"sev_hi_hints", &VISITORCLASS::VisitSystem},                            \
-      {"ssbb_only_barriers", &VISITORCLASS::VisitSystem},                      \
       {"sysl_rc_systeminstrs", &VISITORCLASS::VisitSystem},                    \
       {"sys_cr_systeminstrs", &VISITORCLASS::VisitSystem},                     \
       {"tcommit_only_barriers", &VISITORCLASS::VisitSystem},                   \
       {"tsb_hc_hints", &VISITORCLASS::VisitSystem},                            \
-      {"wfe_hi_hints", &VISITORCLASS::VisitSystem},                            \
-      {"wfi_hi_hints", &VISITORCLASS::VisitSystem},                            \
-      {"xaflag_m_pstate", &VISITORCLASS::VisitSystem},                         \
-      {"xpaclri_hi_hints", &VISITORCLASS::VisitSystem},                        \
-      {"yield_hi_hints", &VISITORCLASS::VisitSystem},                          \
       {"tbnz_only_testbranch", &VISITORCLASS::VisitTestBranch},                \
       {"tbz_only_testbranch", &VISITORCLASS::VisitTestBranch},                 \
       {"bl_only_branch_imm", &VISITORCLASS::VisitUnconditionalBranch},         \
@@ -2886,12 +2625,9 @@
       {"subg_64_addsub_immtags", &VISITORCLASS::VisitUnimplemented},           \
       {"subps_64s_dp_2src", &VISITORCLASS::VisitUnimplemented},                \
       {"subp_64s_dp_2src", &VISITORCLASS::VisitUnimplemented},                 \
-      {"sudot_asimdelem_d", &VISITORCLASS::VisitUnimplemented},                \
       {"tcancel_ex_exception", &VISITORCLASS::VisitUnimplemented},             \
       {"tstart_br_systemresult", &VISITORCLASS::VisitUnimplemented},           \
       {"ttest_br_systemresult", &VISITORCLASS::VisitUnimplemented},            \
-      {"usdot_asimdelem_d", &VISITORCLASS::VisitUnimplemented},                \
-      {"usdot_asimdsame2_d", &VISITORCLASS::VisitUnimplemented},               \
       {"wfet_only_systeminstrswithreg", &VISITORCLASS::VisitUnimplemented},    \
       {"wfit_only_systeminstrswithreg", &VISITORCLASS::VisitUnimplemented},    \
       {"xar_vvv2_crypto3_imm6", &VISITORCLASS::VisitUnimplemented},            \
@@ -2903,14 +2639,245 @@
       {"bfmlalb_z_zzzi_", &VISITORCLASS::VisitUnimplemented},                  \
       {"bfmlalt_z_zzz_", &VISITORCLASS::VisitUnimplemented},                   \
       {"bfmlalt_z_zzzi_", &VISITORCLASS::VisitUnimplemented},                  \
-      {"bfmmla_z_zzz_", &VISITORCLASS::VisitUnimplemented},                    \
-      {"ld1rob_z_p_bi_u8", &VISITORCLASS::VisitUnimplemented},                 \
-      {"ld1rob_z_p_br_contiguous", &VISITORCLASS::VisitUnimplemented},         \
-      {"ld1rod_z_p_bi_u64", &VISITORCLASS::VisitUnimplemented},                \
-      {"ld1rod_z_p_br_contiguous", &VISITORCLASS::VisitUnimplemented},         \
-      {"ld1roh_z_p_bi_u16", &VISITORCLASS::VisitUnimplemented},                \
-      {"ld1roh_z_p_br_contiguous", &VISITORCLASS::VisitUnimplemented},         \
-      {"ld1row_z_p_bi_u32", &VISITORCLASS::VisitUnimplemented},                \
-      {"ld1row_z_p_br_contiguous", &VISITORCLASS::VisitUnimplemented}, {       \
+      {"bfmmla_z_zzz_", &VISITORCLASS::VisitUnimplemented}, {                  \
     "Unallocated", &VISITORCLASS::VisitUnallocated                             \
+  }
+
+#define SIM_AUD_VISITOR_MAP(VISITORCLASS)                                      \
+  {"autia1716_hi_hints", &VISITORCLASS::VisitSystem},                          \
+      {"autiasp_hi_hints", &VISITORCLASS::VisitSystem},                        \
+      {"autiaz_hi_hints", &VISITORCLASS::VisitSystem},                         \
+      {"autib1716_hi_hints", &VISITORCLASS::VisitSystem},                      \
+      {"autibsp_hi_hints", &VISITORCLASS::VisitSystem},                        \
+      {"autibz_hi_hints", &VISITORCLASS::VisitSystem},                         \
+      {"axflag_m_pstate", &VISITORCLASS::VisitSystem},                         \
+      {"cfinv_m_pstate", &VISITORCLASS::VisitSystem},                          \
+      {"csdb_hi_hints", &VISITORCLASS::VisitSystem},                           \
+      {"dgh_hi_hints", &VISITORCLASS::VisitSystem},                            \
+      {"esb_hi_hints", &VISITORCLASS::VisitSystem},                            \
+      {"isb_bi_barriers", &VISITORCLASS::VisitSystem},                         \
+      {"nop_hi_hints", &VISITORCLASS::VisitSystem},                            \
+      {"pacia1716_hi_hints", &VISITORCLASS::VisitSystem},                      \
+      {"paciasp_hi_hints", &VISITORCLASS::VisitSystem},                        \
+      {"paciaz_hi_hints", &VISITORCLASS::VisitSystem},                         \
+      {"pacib1716_hi_hints", &VISITORCLASS::VisitSystem},                      \
+      {"pacibsp_hi_hints", &VISITORCLASS::VisitSystem},                        \
+      {"pacibz_hi_hints", &VISITORCLASS::VisitSystem},                         \
+      {"pssbb_only_barriers", &VISITORCLASS::VisitSystem},                     \
+      {"sev_hi_hints", &VISITORCLASS::VisitSystem},                            \
+      {"sevl_hi_hints", &VISITORCLASS::VisitSystem},                           \
+      {"ssbb_only_barriers", &VISITORCLASS::VisitSystem},                      \
+      {"wfe_hi_hints", &VISITORCLASS::VisitSystem},                            \
+      {"wfi_hi_hints", &VISITORCLASS::VisitSystem},                            \
+      {"xaflag_m_pstate", &VISITORCLASS::VisitSystem},                         \
+      {"xpaclri_hi_hints", &VISITORCLASS::VisitSystem},                        \
+      {"yield_hi_hints", &VISITORCLASS::VisitSystem},                          \
+      {"abs_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                   \
+      {"cls_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                   \
+      {"clz_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                   \
+      {"cmeq_asimdmisc_z", &VISITORCLASS::VisitNEON2RegMisc},                  \
+      {"cmge_asimdmisc_z", &VISITORCLASS::VisitNEON2RegMisc},                  \
+      {"cmgt_asimdmisc_z", &VISITORCLASS::VisitNEON2RegMisc},                  \
+      {"cmle_asimdmisc_z", &VISITORCLASS::VisitNEON2RegMisc},                  \
+      {"cmlt_asimdmisc_z", &VISITORCLASS::VisitNEON2RegMisc},                  \
+      {"cnt_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                   \
+      {"fabs_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                  \
+      {"fcmeq_asimdmisc_fz", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fcmge_asimdmisc_fz", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fcmgt_asimdmisc_fz", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fcmle_asimdmisc_fz", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fcmlt_asimdmisc_fz", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fcvtas_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fcvtau_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fcvtl_asimdmisc_l", &VISITORCLASS::VisitNEON2RegMisc},                 \
+      {"fcvtms_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fcvtmu_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fcvtns_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fcvtnu_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fcvtn_asimdmisc_n", &VISITORCLASS::VisitNEON2RegMisc},                 \
+      {"fcvtps_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fcvtpu_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fcvtxn_asimdmisc_n", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fcvtzs_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fcvtzu_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"fneg_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                  \
+      {"frecpe_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"frint32x_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},              \
+      {"frint32z_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},              \
+      {"frint64x_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},              \
+      {"frint64z_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},              \
+      {"frinta_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"frinti_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"frintm_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"frintn_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"frintp_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"frintx_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"frintz_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"frsqrte_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},               \
+      {"fsqrt_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
+      {"neg_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                   \
+      {"not_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                   \
+      {"rbit_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                  \
+      {"rev16_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
+      {"rev32_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
+      {"rev64_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
+      {"sadalp_asimdmisc_p", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"saddlp_asimdmisc_p", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"scvtf_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
+      {"shll_asimdmisc_s", &VISITORCLASS::VisitNEON2RegMisc},                  \
+      {"sqabs_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
+      {"sqneg_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
+      {"sqxtn_asimdmisc_n", &VISITORCLASS::VisitNEON2RegMisc},                 \
+      {"sqxtun_asimdmisc_n", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"suqadd_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"uadalp_asimdmisc_p", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"uaddlp_asimdmisc_p", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"ucvtf_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                 \
+      {"uqxtn_asimdmisc_n", &VISITORCLASS::VisitNEON2RegMisc},                 \
+      {"urecpe_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"ursqrte_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},               \
+      {"usqadd_asimdmisc_r", &VISITORCLASS::VisitNEON2RegMisc},                \
+      {"xtn_asimdmisc_n", &VISITORCLASS::VisitNEON2RegMisc},                   \
+      {"mla_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
+      {"mls_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
+      {"mul_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
+      {"saba_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
+      {"sabd_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
+      {"shadd_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
+      {"shsub_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
+      {"smaxp_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
+      {"smax_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
+      {"sminp_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
+      {"smin_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
+      {"srhadd_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                \
+      {"uaba_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
+      {"uabd_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
+      {"uhadd_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
+      {"uhsub_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
+      {"umaxp_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
+      {"umax_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
+      {"uminp_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                 \
+      {"umin_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
+      {"urhadd_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                \
+      {"and_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
+      {"bic_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
+      {"bif_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
+      {"bit_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
+      {"bsl_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
+      {"eor_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
+      {"orr_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
+      {"orn_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                   \
+      {"pmul_asimdsame_only", &VISITORCLASS::VisitNEON3Same},                  \
+      {"fmlal2_asimdsame_f", &VISITORCLASS::VisitNEON3Same},                   \
+      {"fmlal_asimdsame_f", &VISITORCLASS::VisitNEON3Same},                    \
+      {"fmlsl2_asimdsame_f", &VISITORCLASS::VisitNEON3Same},                   \
+      {"fmlsl_asimdsame_f", &VISITORCLASS::VisitNEON3Same},                    \
+      {"ushll_asimdshf_l", &VISITORCLASS::VisitNEONShiftImmediate},            \
+      {"sshll_asimdshf_l", &VISITORCLASS::VisitNEONShiftImmediate},            \
+      {"shrn_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},             \
+      {"rshrn_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},            \
+      {"sqshrn_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},           \
+      {"sqrshrn_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},          \
+      {"sqshrun_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},          \
+      {"sqrshrun_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},         \
+      {"uqshrn_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},           \
+      {"uqrshrn_asimdshf_n", &VISITORCLASS::VisitNEONShiftImmediate},          \
+      {"sri_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},              \
+      {"srshr_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},            \
+      {"srsra_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},            \
+      {"sshr_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},             \
+      {"ssra_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},             \
+      {"urshr_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},            \
+      {"ursra_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},            \
+      {"ushr_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},             \
+      {"usra_asimdshf_r", &VISITORCLASS::VisitNEONShiftImmediate},             \
+      {"scvtf_asimdshf_c", &VISITORCLASS::VisitNEONShiftImmediate},            \
+      {"ucvtf_asimdshf_c", &VISITORCLASS::VisitNEONShiftImmediate},            \
+      {"fcvtzs_asimdshf_c", &VISITORCLASS::VisitNEONShiftImmediate},           \
+      {"fcvtzu_asimdshf_c", &VISITORCLASS::VisitNEONShiftImmediate},           \
+      {"sqdmlal_asisdelem_l", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
+      {"sqdmlsl_asisdelem_l", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
+      {"sqdmull_asisdelem_l", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
+      {"fmla_asisdelem_rh_h", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
+      {"fmla_asisdelem_r_sd", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
+      {"fmls_asisdelem_rh_h", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
+      {"fmls_asisdelem_r_sd", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
+      {"fmulx_asisdelem_rh_h",                                                 \
+       &VISITORCLASS::VisitNEONScalarByIndexedElement},                        \
+      {"fmulx_asisdelem_r_sd",                                                 \
+       &VISITORCLASS::VisitNEONScalarByIndexedElement},                        \
+      {"fmul_asisdelem_rh_h", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
+      {"fmul_asisdelem_r_sd", &VISITORCLASS::VisitNEONScalarByIndexedElement}, \
+      {"fabd_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},            \
+      {"facge_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
+      {"facgt_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
+      {"fcmeq_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
+      {"fcmge_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
+      {"fcmgt_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
+      {"fmulx_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
+      {"frecps_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},          \
+      {"frsqrts_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},         \
+      {"cmeq_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},            \
+      {"cmge_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},            \
+      {"cmgt_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},            \
+      {"cmhi_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},            \
+      {"cmhs_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},            \
+      {"cmtst_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},           \
+      {"add_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},             \
+      {"sub_asisdsame_only", &VISITORCLASS::VisitNEONScalar3Same},             \
+      {"sqrdmlah_asisdsame2_only", &VISITORCLASS::VisitNEONScalar3SameExtra},  \
+      {"sqrdmlsh_asisdsame2_only", &VISITORCLASS::VisitNEONScalar3SameExtra},  \
+      {"fmaxnmv_asimdall_only_h", &VISITORCLASS::VisitNEONAcrossLanes},        \
+      {"fmaxv_asimdall_only_h", &VISITORCLASS::VisitNEONAcrossLanes},          \
+      {"fminnmv_asimdall_only_h", &VISITORCLASS::VisitNEONAcrossLanes},        \
+      {"fminv_asimdall_only_h", &VISITORCLASS::VisitNEONAcrossLanes},          \
+      {"fmaxnmv_asimdall_only_sd", &VISITORCLASS::VisitNEONAcrossLanes},       \
+      {"fminnmv_asimdall_only_sd", &VISITORCLASS::VisitNEONAcrossLanes},       \
+      {"fmaxv_asimdall_only_sd", &VISITORCLASS::VisitNEONAcrossLanes},         \
+      {"fminv_asimdall_only_sd", &VISITORCLASS::VisitNEONAcrossLanes},         \
+      {"shl_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},        \
+      {"sli_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},        \
+      {"sri_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},        \
+      {"srshr_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},      \
+      {"srsra_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},      \
+      {"sshr_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},       \
+      {"ssra_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},       \
+      {"urshr_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},      \
+      {"ursra_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},      \
+      {"ushr_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},       \
+      {"usra_asisdshf_r", &VISITORCLASS::VisitNEONScalarShiftImmediate},       \
+      {"sqrshrn_asisdshf_n", &VISITORCLASS::VisitNEONScalarShiftImmediate},    \
+      {"sqrshrun_asisdshf_n", &VISITORCLASS::VisitNEONScalarShiftImmediate},   \
+      {"sqshrn_asisdshf_n", &VISITORCLASS::VisitNEONScalarShiftImmediate},     \
+      {"sqshrun_asisdshf_n", &VISITORCLASS::VisitNEONScalarShiftImmediate},    \
+      {"uqrshrn_asisdshf_n", &VISITORCLASS::VisitNEONScalarShiftImmediate},    \
+      {"uqshrn_asisdshf_n", &VISITORCLASS::VisitNEONScalarShiftImmediate},     \
+      {"cmeq_asisdmisc_z", &VISITORCLASS::VisitNEONScalar2RegMisc},            \
+      {"cmge_asisdmisc_z", &VISITORCLASS::VisitNEONScalar2RegMisc},            \
+      {"cmgt_asisdmisc_z", &VISITORCLASS::VisitNEONScalar2RegMisc},            \
+      {"cmle_asisdmisc_z", &VISITORCLASS::VisitNEONScalar2RegMisc},            \
+      {"cmlt_asisdmisc_z", &VISITORCLASS::VisitNEONScalar2RegMisc},            \
+      {"abs_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},             \
+      {"neg_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},             \
+      {"fcmeq_asisdmisc_fz", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"fcmge_asisdmisc_fz", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"fcmgt_asisdmisc_fz", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"fcmle_asisdmisc_fz", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"fcmlt_asisdmisc_fz", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"fcvtas_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"fcvtau_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"fcvtms_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"fcvtmu_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"fcvtns_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"fcvtnu_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"fcvtps_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"fcvtpu_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"fcvtxn_asisdmisc_n", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"fcvtzs_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"fcvtzu_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"frecpe_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"frecpx_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},          \
+      {"frsqrte_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc},         \
+      {"scvtf_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc}, {         \
+    "ucvtf_asisdmisc_r", &VISITORCLASS::VisitNEONScalar2RegMisc                \
   }

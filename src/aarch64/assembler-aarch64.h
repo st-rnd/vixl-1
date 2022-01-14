@@ -3367,6 +3367,21 @@ class Assembler : public vixl::internal::AssemblerBase {
   // Unsigned dot product [Armv8.2].
   void udot(const VRegister& vd, const VRegister& vn, const VRegister& vm);
 
+  // Dot Product with unsigned and signed integers (vector).
+  void usdot(const VRegister& vd, const VRegister& vn, const VRegister& vm);
+
+  // Dot product with signed and unsigned integers (vector, by element).
+  void sudot(const VRegister& vd,
+             const VRegister& vn,
+             const VRegister& vm,
+             int vm_index);
+
+  // Dot product with unsigned and signed integers (vector, by element).
+  void usdot(const VRegister& vd,
+             const VRegister& vn,
+             const VRegister& vm,
+             int vm_index);
+
   // Signed saturating rounding doubling multiply subtract returning high half
   // [Armv8.1].
   void sqrdmlsh(const VRegister& vd, const VRegister& vn, const VRegister& vm);
@@ -4597,6 +4612,26 @@ class Assembler : public vixl::internal::AssemblerBase {
 
   // Contiguous load and replicate two doublewords.
   void ld1rqd(const ZRegister& zt,
+              const PRegisterZ& pg,
+              const SVEMemOperand& addr);
+
+  // Contiguous load and replicate thirty-two bytes.
+  void ld1rob(const ZRegister& zt,
+              const PRegisterZ& pg,
+              const SVEMemOperand& addr);
+
+  // Contiguous load and replicate sixteen halfwords.
+  void ld1roh(const ZRegister& zt,
+              const PRegisterZ& pg,
+              const SVEMemOperand& addr);
+
+  // Contiguous load and replicate eight words.
+  void ld1row(const ZRegister& zt,
+              const PRegisterZ& pg,
+              const SVEMemOperand& addr);
+
+  // Contiguous load and replicate four doublewords.
+  void ld1rod(const ZRegister& zt,
               const PRegisterZ& pg,
               const SVEMemOperand& addr);
 
@@ -6539,20 +6574,6 @@ class Assembler : public vixl::internal::AssemblerBase {
   // Signed subtract wide (top).
   void ssubwt(const ZRegister& zd, const ZRegister& zn, const ZRegister& zm);
 
-#if 0
-  // Scatter store non-temporal bytes.
-  void stnt1b(const ZRegister& zt, const PRegister& pg, const ZRegister& zn, const Register& rm);
-
-  // Scatter store non-temporal doublewords.
-  void stnt1d(const ZRegister& zt, const PRegister& pg, const ZRegister& zn, const Register& rm);
-
-  // Scatter store non-temporal halfwords.
-  void stnt1h(const ZRegister& zt, const PRegister& pg, const ZRegister& zn, const Register& rm);
-
-  // Scatter store non-temporal words.
-  void stnt1w(const ZRegister& zt, const PRegister& pg, const ZRegister& zn, const Register& rm);
-#endif
-
   // Subtract narrow high part (bottom).
   void subhnb(const ZRegister& zd, const ZRegister& zn, const ZRegister& zm);
 
@@ -6865,6 +6886,21 @@ class Assembler : public vixl::internal::AssemblerBase {
   // Unsigned integer matrix multiply-accumulate.
   void ummla(const ZRegister& zda, const ZRegister& zn, const ZRegister& zm);
 
+  // Unsigned by signed integer dot product.
+  void usdot(const ZRegister& zda, const ZRegister& zn, const ZRegister& zm);
+
+  // Unsigned by signed integer indexed dot product.
+  void usdot(const ZRegister& zda,
+             const ZRegister& zn,
+             const ZRegister& zm,
+             int index);
+
+  // Signed by unsigned integer indexed dot product.
+  void sudot(const ZRegister& zda,
+             const ZRegister& zn,
+             const ZRegister& zm,
+             int index);
+
   // Emit generic instructions.
 
   // Emit raw instructions into the instruction stream.
@@ -7031,11 +7067,11 @@ class Assembler : public vixl::internal::AssemblerBase {
   static Instr ImmTestBranchBit(unsigned bit_pos) {
     VIXL_ASSERT(IsUint6(bit_pos));
     // Subtract five from the shift offset, as we need bit 5 from bit_pos.
-    unsigned b5 = bit_pos << (ImmTestBranchBit5_offset - 5);
-    unsigned b40 = bit_pos << ImmTestBranchBit40_offset;
-    b5 &= ImmTestBranchBit5_mask;
-    b40 &= ImmTestBranchBit40_mask;
-    return b5 | b40;
+    unsigned bit5 = bit_pos << (ImmTestBranchBit5_offset - 5);
+    unsigned bit40 = bit_pos << ImmTestBranchBit40_offset;
+    bit5 &= ImmTestBranchBit5_mask;
+    bit40 &= ImmTestBranchBit40_mask;
+    return bit5 | bit40;
   }
 
   // Data Processing encoding.

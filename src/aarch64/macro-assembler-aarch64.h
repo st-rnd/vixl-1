@@ -2819,7 +2819,8 @@ class MacroAssembler : public Assembler, public MacroAssemblerInterface {
   V(zip2, Zip2)                  \
   V(smmla, Smmla)                \
   V(ummla, Ummla)                \
-  V(usmmla, Usmmla)
+  V(usmmla, Usmmla)              \
+  V(usdot, Usdot)
 
 #define DEFINE_MACRO_ASM_FUNC(ASM, MASM)                                     \
   void MASM(const VRegister& vd, const VRegister& vn, const VRegister& vm) { \
@@ -2971,7 +2972,10 @@ class MacroAssembler : public Assembler, public MacroAssemblerInterface {
   V(umlal, Umlal)                    \
   V(umlal2, Umlal2)                  \
   V(umlsl, Umlsl)                    \
-  V(umlsl2, Umlsl2)
+  V(umlsl2, Umlsl2)                  \
+  V(sudot, Sudot)                    \
+  V(usdot, Usdot)
+
 
 #define DEFINE_MACRO_ASM_FUNC(ASM, MASM)    \
   void MASM(const VRegister& vd,            \
@@ -4867,6 +4871,18 @@ class MacroAssembler : public Assembler, public MacroAssemblerInterface {
               const PRegisterZ& pg,
               const SVEMemOperand& addr);
   void Ld1rqw(const ZRegister& zt,
+              const PRegisterZ& pg,
+              const SVEMemOperand& addr);
+  void Ld1rob(const ZRegister& zt,
+              const PRegisterZ& pg,
+              const SVEMemOperand& addr);
+  void Ld1rod(const ZRegister& zt,
+              const PRegisterZ& pg,
+              const SVEMemOperand& addr);
+  void Ld1roh(const ZRegister& zt,
+              const PRegisterZ& pg,
+              const SVEMemOperand& addr);
+  void Ld1row(const ZRegister& zt,
               const PRegisterZ& pg,
               const SVEMemOperand& addr);
   void Ld1rsb(const ZRegister& zt,
@@ -7455,6 +7471,20 @@ class MacroAssembler : public Assembler, public MacroAssemblerInterface {
               const ZRegister& za,
               const ZRegister& zn,
               const ZRegister& zm);
+  void Usdot(const ZRegister& zd,
+             const ZRegister& za,
+             const ZRegister& zn,
+             const ZRegister& zm);
+  void Usdot(const ZRegister& zd,
+             const ZRegister& za,
+             const ZRegister& zn,
+             const ZRegister& zm,
+             int index);
+  void Sudot(const ZRegister& zd,
+             const ZRegister& za,
+             const ZRegister& zn,
+             const ZRegister& zm,
+             int index);
 
   template <typename T>
   Literal<T>* CreateLiteralDestroyedWithPool(T value) {
@@ -7873,7 +7903,7 @@ class MacroAssembler : public Assembler, public MacroAssemblerInterface {
   // SVE_MUL_VL). The ratio log2 of VL to memory access size is passed as
   // vl_divisor_log2; pass -1 to indicate no dependency.
   template <typename Tg, typename Tf>
-  void SVELoadStoreScalarImmHelper(
+  void SVELoadStoreNTBroadcastQOHelper(
       const ZRegister& zt,
       const Tg& pg,
       const SVEMemOperand& addr,
@@ -7973,12 +8003,12 @@ class MacroAssembler : public Assembler, public MacroAssemblerInterface {
                                 const ZRegister& zn,
                                 const ZRegister& zm);
 
-  void SVESdotUdotIndexHelper(ZZZImmFn fn,
-                              const ZRegister& zd,
-                              const ZRegister& za,
-                              const ZRegister& zn,
-                              const ZRegister& zm,
-                              int index);
+  void SVEDotIndexHelper(ZZZImmFn fn,
+                         const ZRegister& zd,
+                         const ZRegister& za,
+                         const ZRegister& zn,
+                         const ZRegister& zm,
+                         int index);
 
   // For noncommutative arithmetic operations.
   void NoncommutativeArithmeticHelper(const ZRegister& zd,

@@ -69,6 +69,32 @@ SimSystemRegister SimSystemRegister::DefaultValueFor(SystemRegister id) {
 
 Simulator::FormToVisitorFnMap Simulator::form_to_visitor_ = {
     DEFAULT_FORM_TO_VISITOR_MAP(Simulator),
+    SIM_AUD_VISITOR_MAP(Simulator),
+    {"smlal_asimdelem_l", &Simulator::SimulateNEONMulByElementLong},
+    {"smlsl_asimdelem_l", &Simulator::SimulateNEONMulByElementLong},
+    {"smull_asimdelem_l", &Simulator::SimulateNEONMulByElementLong},
+    {"sqdmlal_asimdelem_l", &Simulator::SimulateNEONMulByElementLong},
+    {"sqdmlsl_asimdelem_l", &Simulator::SimulateNEONMulByElementLong},
+    {"sqdmull_asimdelem_l", &Simulator::SimulateNEONMulByElementLong},
+    {"umlal_asimdelem_l", &Simulator::SimulateNEONMulByElementLong},
+    {"umlsl_asimdelem_l", &Simulator::SimulateNEONMulByElementLong},
+    {"umull_asimdelem_l", &Simulator::SimulateNEONMulByElementLong},
+    {"fcmla_asimdelem_c_h", &Simulator::SimulateNEONComplexMulByElement},
+    {"fcmla_asimdelem_c_s", &Simulator::SimulateNEONComplexMulByElement},
+    {"fmlal2_asimdelem_lh", &Simulator::SimulateNEONFPMulByElementLong},
+    {"fmlal_asimdelem_lh", &Simulator::SimulateNEONFPMulByElementLong},
+    {"fmlsl2_asimdelem_lh", &Simulator::SimulateNEONFPMulByElementLong},
+    {"fmlsl_asimdelem_lh", &Simulator::SimulateNEONFPMulByElementLong},
+    {"fmla_asimdelem_rh_h", &Simulator::SimulateNEONFPMulByElement},
+    {"fmls_asimdelem_rh_h", &Simulator::SimulateNEONFPMulByElement},
+    {"fmulx_asimdelem_rh_h", &Simulator::SimulateNEONFPMulByElement},
+    {"fmul_asimdelem_rh_h", &Simulator::SimulateNEONFPMulByElement},
+    {"fmla_asimdelem_r_sd", &Simulator::SimulateNEONFPMulByElement},
+    {"fmls_asimdelem_r_sd", &Simulator::SimulateNEONFPMulByElement},
+    {"fmulx_asimdelem_r_sd", &Simulator::SimulateNEONFPMulByElement},
+    {"fmul_asimdelem_r_sd", &Simulator::SimulateNEONFPMulByElement},
+    {"sdot_asimdelem_d", &Simulator::SimulateNEONDotProdByElement},
+    {"udot_asimdelem_d", &Simulator::SimulateNEONDotProdByElement},
     {"adclb_z_zzz", &Simulator::SimulateSVEAddSubCarry},
     {"adclt_z_zzz", &Simulator::SimulateSVEAddSubCarry},
     {"addhnb_z_zz", &Simulator::SimulateSVEAddSubHigh},
@@ -357,6 +383,28 @@ Simulator::FormToVisitorFnMap Simulator::form_to_visitor_ = {
     {"usmmla_asimdsame2_g", &Simulator::SimulateMatrixMul},
     {"fmmla_z_zzz_s", &Simulator::SimulateSVEFPMatrixMul},
     {"fmmla_z_zzz_d", &Simulator::SimulateSVEFPMatrixMul},
+    {"ld1row_z_p_bi_u32",
+     &Simulator::VisitSVELoadAndBroadcastQOWord_ScalarPlusImm},
+    {"ld1row_z_p_br_contiguous",
+     &Simulator::VisitSVELoadAndBroadcastQOWord_ScalarPlusScalar},
+    {"ld1rod_z_p_bi_u64",
+     &Simulator::VisitSVELoadAndBroadcastQOWord_ScalarPlusImm},
+    {"ld1rod_z_p_br_contiguous",
+     &Simulator::VisitSVELoadAndBroadcastQOWord_ScalarPlusScalar},
+    {"ld1rob_z_p_bi_u8",
+     &Simulator::VisitSVELoadAndBroadcastQOWord_ScalarPlusImm},
+    {"ld1rob_z_p_br_contiguous",
+     &Simulator::VisitSVELoadAndBroadcastQOWord_ScalarPlusScalar},
+    {"ld1roh_z_p_bi_u16",
+     &Simulator::VisitSVELoadAndBroadcastQOWord_ScalarPlusImm},
+    {"ld1roh_z_p_br_contiguous",
+     &Simulator::VisitSVELoadAndBroadcastQOWord_ScalarPlusScalar},
+    {"usdot_z_zzz_s", &Simulator::VisitSVEIntMulAddUnpredicated},
+    {"sudot_z_zzzi_s", &Simulator::VisitSVEMulIndex},
+    {"usdot_z_zzzi_s", &Simulator::VisitSVEMulIndex},
+    {"usdot_asimdsame2_d", &Simulator::VisitNEON3SameExtra},
+    {"sudot_asimdelem_d", &Simulator::SimulateNEONDotProdByElement},
+    {"usdot_asimdelem_d", &Simulator::SimulateNEONDotProdByElement},
 };
 
 Simulator::Simulator(Decoder* decoder, FILE* stream, SimStack::Allocated stack)
@@ -7344,30 +7392,31 @@ void Simulator::VisitNEON3SameExtra(const Instruction* instr) {
   SimVRegister& rm = ReadVRegister(instr->GetRm());
   int rot = 0;
   VectorFormat vf = nfd.GetVectorFormat();
-  if (instr->Mask(NEON3SameExtraFCMLAMask) == NEON_FCMLA) {
-    rot = instr->GetImmRotFcmlaVec();
-    fcmla(vf, rd, rn, rm, rd, rot);
-  } else if (instr->Mask(NEON3SameExtraFCADDMask) == NEON_FCADD) {
-    rot = instr->GetImmRotFcadd();
-    fcadd(vf, rd, rn, rm, rot);
-  } else {
-    switch (instr->Mask(NEON3SameExtraMask)) {
-      case NEON_SDOT:
-        sdot(vf, rd, rn, rm);
-        break;
-      case NEON_SQRDMLAH:
-        sqrdmlah(vf, rd, rn, rm);
-        break;
-      case NEON_UDOT:
-        udot(vf, rd, rn, rm);
-        break;
-      case NEON_SQRDMLSH:
-        sqrdmlsh(vf, rd, rn, rm);
-        break;
-      default:
-        VIXL_UNIMPLEMENTED();
-        break;
-    }
+
+  switch (form_hash_) {
+    case Hash("fcmla_asimdsame2_c"):
+      rot = instr->GetImmRotFcmlaVec();
+      fcmla(vf, rd, rn, rm, rd, rot);
+      break;
+    case Hash("fcadd_asimdsame2_c"):
+      rot = instr->GetImmRotFcadd();
+      fcadd(vf, rd, rn, rm, rot);
+      break;
+    case Hash("sdot_asimdsame2_d"):
+      sdot(vf, rd, rn, rm);
+      break;
+    case Hash("udot_asimdsame2_d"):
+      udot(vf, rd, rn, rm);
+      break;
+    case Hash("usdot_asimdsame2_d"):
+      usdot(vf, rd, rn, rm);
+      break;
+    case Hash("sqrdmlah_asimdsame2_only"):
+      sqrdmlah(vf, rd, rn, rm);
+      break;
+    case Hash("sqrdmlsh_asimdsame2_only"):
+      sqrdmlsh(vf, rd, rn, rm);
+      break;
   }
 }
 
@@ -7621,206 +7670,225 @@ void Simulator::VisitNEONAcrossLanes(const Instruction* instr) {
   }
 }
 
-
-void Simulator::VisitNEONByIndexedElement(const Instruction* instr) {
+void Simulator::SimulateNEONMulByElementLong(const Instruction* instr) {
   NEONFormatDecoder nfd(instr);
-  static const NEONFormatMap map_half = {{30}, {NF_4H, NF_8H}};
-  VectorFormat vf_r = nfd.GetVectorFormat();
-  VectorFormat vf_half = nfd.GetVectorFormat(&map_half);
   VectorFormat vf = nfd.GetVectorFormat(nfd.LongIntegerFormatMap());
 
   SimVRegister& rd = ReadVRegister(instr->GetRd());
   SimVRegister& rn = ReadVRegister(instr->GetRn());
 
-  ByElementOp Op = NULL;
-
   int rm_reg = instr->GetRm();
-  int rm_low_reg = instr->GetRmLow16();
   int index = (instr->GetNEONH() << 1) | instr->GetNEONL();
-  int index_hlm = (index << 1) | instr->GetNEONM();
-
-  switch (instr->Mask(NEONByIndexedElementFPLongMask)) {
-    // These are oddballs and are best handled as special cases.
-    // - Rm is encoded with only 4 bits (and must be in the lower 16 registers).
-    // - The index is always H:L:M.
-    case NEON_FMLAL_H_byelement:
-      fmlal(vf_r, rd, rn, ReadVRegister(rm_low_reg), index_hlm);
-      return;
-    case NEON_FMLAL2_H_byelement:
-      fmlal2(vf_r, rd, rn, ReadVRegister(rm_low_reg), index_hlm);
-      return;
-    case NEON_FMLSL_H_byelement:
-      fmlsl(vf_r, rd, rn, ReadVRegister(rm_low_reg), index_hlm);
-      return;
-    case NEON_FMLSL2_H_byelement:
-      fmlsl2(vf_r, rd, rn, ReadVRegister(rm_low_reg), index_hlm);
-      return;
-  }
-
   if (instr->GetNEONSize() == 1) {
-    rm_reg = rm_low_reg;
-    index = index_hlm;
+    rm_reg = instr->GetRmLow16();
+    index = (index << 1) | instr->GetNEONM();
   }
+  SimVRegister& rm = ReadVRegister(rm_reg);
 
-  switch (instr->Mask(NEONByIndexedElementMask)) {
-    case NEON_MUL_byelement:
-      Op = &Simulator::mul;
-      vf = vf_r;
+  SimVRegister temp;
+  VectorFormat indexform =
+      VectorFormatHalfWidthDoubleLanes(VectorFormatFillQ(vf));
+  dup_element(indexform, temp, rm, index);
+
+  bool is_2 = instr->Mask(NEON_Q) ? true : false;
+
+  switch (form_hash_) {
+    case Hash("smull_asimdelem_l"):
+      smull(vf, rd, rn, temp, is_2);
       break;
-    case NEON_MLA_byelement:
-      Op = &Simulator::mla;
-      vf = vf_r;
+    case Hash("umull_asimdelem_l"):
+      umull(vf, rd, rn, temp, is_2);
       break;
-    case NEON_MLS_byelement:
-      Op = &Simulator::mls;
-      vf = vf_r;
+    case Hash("smlal_asimdelem_l"):
+      smlal(vf, rd, rn, temp, is_2);
       break;
-    case NEON_SQDMULH_byelement:
-      Op = &Simulator::sqdmulh;
-      vf = vf_r;
+    case Hash("umlal_asimdelem_l"):
+      umlal(vf, rd, rn, temp, is_2);
       break;
-    case NEON_SQRDMULH_byelement:
-      Op = &Simulator::sqrdmulh;
-      vf = vf_r;
+    case Hash("smlsl_asimdelem_l"):
+      smlsl(vf, rd, rn, temp, is_2);
       break;
-    case NEON_SDOT_byelement:
-      Op = &Simulator::sdot;
-      vf = vf_r;
+    case Hash("umlsl_asimdelem_l"):
+      umlsl(vf, rd, rn, temp, is_2);
       break;
-    case NEON_SQRDMLAH_byelement:
-      Op = &Simulator::sqrdmlah;
-      vf = vf_r;
+    case Hash("sqdmull_asimdelem_l"):
+      sqdmull(vf, rd, rn, temp, is_2);
       break;
-    case NEON_UDOT_byelement:
-      Op = &Simulator::udot;
-      vf = vf_r;
+    case Hash("sqdmlal_asimdelem_l"):
+      sqdmlal(vf, rd, rn, temp, is_2);
       break;
-    case NEON_SQRDMLSH_byelement:
-      Op = &Simulator::sqrdmlsh;
-      vf = vf_r;
-      break;
-    case NEON_SMULL_byelement:
-      if (instr->Mask(NEON_Q)) {
-        Op = &Simulator::smull2;
-      } else {
-        Op = &Simulator::smull;
-      }
-      break;
-    case NEON_UMULL_byelement:
-      if (instr->Mask(NEON_Q)) {
-        Op = &Simulator::umull2;
-      } else {
-        Op = &Simulator::umull;
-      }
-      break;
-    case NEON_SMLAL_byelement:
-      if (instr->Mask(NEON_Q)) {
-        Op = &Simulator::smlal2;
-      } else {
-        Op = &Simulator::smlal;
-      }
-      break;
-    case NEON_UMLAL_byelement:
-      if (instr->Mask(NEON_Q)) {
-        Op = &Simulator::umlal2;
-      } else {
-        Op = &Simulator::umlal;
-      }
-      break;
-    case NEON_SMLSL_byelement:
-      if (instr->Mask(NEON_Q)) {
-        Op = &Simulator::smlsl2;
-      } else {
-        Op = &Simulator::smlsl;
-      }
-      break;
-    case NEON_UMLSL_byelement:
-      if (instr->Mask(NEON_Q)) {
-        Op = &Simulator::umlsl2;
-      } else {
-        Op = &Simulator::umlsl;
-      }
-      break;
-    case NEON_SQDMULL_byelement:
-      if (instr->Mask(NEON_Q)) {
-        Op = &Simulator::sqdmull2;
-      } else {
-        Op = &Simulator::sqdmull;
-      }
-      break;
-    case NEON_SQDMLAL_byelement:
-      if (instr->Mask(NEON_Q)) {
-        Op = &Simulator::sqdmlal2;
-      } else {
-        Op = &Simulator::sqdmlal;
-      }
-      break;
-    case NEON_SQDMLSL_byelement:
-      if (instr->Mask(NEON_Q)) {
-        Op = &Simulator::sqdmlsl2;
-      } else {
-        Op = &Simulator::sqdmlsl;
-      }
+    case Hash("sqdmlsl_asimdelem_l"):
+      sqdmlsl(vf, rd, rn, temp, is_2);
       break;
     default:
-      index = instr->GetNEONH();
-      if (instr->GetFPType() == 0) {
-        rm_reg &= 0xf;
-        index = (index << 2) | (instr->GetNEONL() << 1) | instr->GetNEONM();
-      } else if ((instr->GetFPType() & 1) == 0) {
-        index = (index << 1) | instr->GetNEONL();
-      }
+      VIXL_UNREACHABLE();
+  }
+}
 
-      vf = nfd.GetVectorFormat(nfd.FPFormatMap());
+void Simulator::SimulateNEONFPMulByElementLong(const Instruction* instr) {
+  VectorFormat vform = instr->GetNEONQ() ? kFormat4S : kFormat2S;
+  SimVRegister& rd = ReadVRegister(instr->GetRd());
+  SimVRegister& rn = ReadVRegister(instr->GetRn());
+  SimVRegister& rm = ReadVRegister(instr->GetRmLow16());
 
-      switch (instr->Mask(NEONByIndexedElementFPMask)) {
-        case NEON_FMUL_H_byelement:
-          vf = vf_half;
-          VIXL_FALLTHROUGH();
-        case NEON_FMUL_byelement:
-          Op = &Simulator::fmul;
-          break;
-        case NEON_FMLA_H_byelement:
-          vf = vf_half;
-          VIXL_FALLTHROUGH();
-        case NEON_FMLA_byelement:
-          Op = &Simulator::fmla;
-          break;
-        case NEON_FMLS_H_byelement:
-          vf = vf_half;
-          VIXL_FALLTHROUGH();
-        case NEON_FMLS_byelement:
-          Op = &Simulator::fmls;
-          break;
-        case NEON_FMULX_H_byelement:
-          vf = vf_half;
-          VIXL_FALLTHROUGH();
-        case NEON_FMULX_byelement:
-          Op = &Simulator::fmulx;
-          break;
-        default:
-          if (instr->GetNEONSize() == 2) {
-            index = instr->GetNEONH();
-          } else {
-            index = (instr->GetNEONH() << 1) | instr->GetNEONL();
-          }
-          switch (instr->Mask(NEONByIndexedElementFPComplexMask)) {
-            case NEON_FCMLA_byelement:
-              vf = vf_r;
-              fcmla(vf,
-                    rd,
-                    rn,
-                    ReadVRegister(instr->GetRm()),
-                    index,
-                    instr->GetImmRotFcmlaSca());
-              return;
-            default:
-              VIXL_UNIMPLEMENTED();
-          }
-      }
+  int index =
+      (instr->GetNEONH() << 2) | (instr->GetNEONL() << 1) | instr->GetNEONM();
+
+  switch (form_hash_) {
+    case Hash("fmlal_asimdelem_lh"):
+      fmlal(vform, rd, rn, rm, index);
+      break;
+    case Hash("fmlal2_asimdelem_lh"):
+      fmlal2(vform, rd, rn, rm, index);
+      break;
+    case Hash("fmlsl_asimdelem_lh"):
+      fmlsl(vform, rd, rn, rm, index);
+      break;
+    case Hash("fmlsl2_asimdelem_lh"):
+      fmlsl2(vform, rd, rn, rm, index);
+      break;
+    default:
+      VIXL_UNREACHABLE();
+  }
+}
+
+void Simulator::SimulateNEONFPMulByElement(const Instruction* instr) {
+  NEONFormatDecoder nfd(instr);
+  static const NEONFormatMap map =
+      {{23, 22, 30},
+       {NF_4H, NF_8H, NF_UNDEF, NF_UNDEF, NF_2S, NF_4S, NF_UNDEF, NF_2D}};
+  VectorFormat vform = nfd.GetVectorFormat(&map);
+
+  SimVRegister& rd = ReadVRegister(instr->GetRd());
+  SimVRegister& rn = ReadVRegister(instr->GetRn());
+
+  int rm_reg = instr->GetRm();
+  int index =
+      (instr->GetNEONH() << 2) | (instr->GetNEONL() << 1) | instr->GetNEONM();
+
+  if ((vform == kFormat4H) || (vform == kFormat8H)) {
+    rm_reg &= 0xf;
+  } else if ((vform == kFormat2S) || (vform == kFormat4S)) {
+    index >>= 1;
+  } else {
+    VIXL_ASSERT(vform == kFormat2D);
+    VIXL_ASSERT(instr->GetNEONL() == 0);
+    index >>= 2;
   }
 
-  (this->*Op)(vf, rd, rn, ReadVRegister(rm_reg), index);
+  SimVRegister& rm = ReadVRegister(rm_reg);
+
+  switch (form_hash_) {
+    case Hash("fmul_asimdelem_rh_h"):
+    case Hash("fmul_asimdelem_r_sd"):
+      fmul(vform, rd, rn, rm, index);
+      break;
+    case Hash("fmla_asimdelem_rh_h"):
+    case Hash("fmla_asimdelem_r_sd"):
+      fmla(vform, rd, rn, rm, index);
+      break;
+    case Hash("fmls_asimdelem_rh_h"):
+    case Hash("fmls_asimdelem_r_sd"):
+      fmls(vform, rd, rn, rm, index);
+      break;
+    case Hash("fmulx_asimdelem_rh_h"):
+    case Hash("fmulx_asimdelem_r_sd"):
+      fmulx(vform, rd, rn, rm, index);
+      break;
+    default:
+      VIXL_UNREACHABLE();
+  }
+}
+
+void Simulator::SimulateNEONComplexMulByElement(const Instruction* instr) {
+  VectorFormat vform = instr->GetNEONQ() ? kFormat8H : kFormat4H;
+  SimVRegister& rd = ReadVRegister(instr->GetRd());
+  SimVRegister& rn = ReadVRegister(instr->GetRn());
+  SimVRegister& rm = ReadVRegister(instr->GetRm());
+  int index = (instr->GetNEONH() << 1) | instr->GetNEONL();
+
+  switch (form_hash_) {
+    case Hash("fcmla_asimdelem_c_s"):
+      vform = kFormat4S;
+      index >>= 1;
+      VIXL_FALLTHROUGH();
+    case Hash("fcmla_asimdelem_c_h"):
+      fcmla(vform, rd, rn, rm, index, instr->GetImmRotFcmlaSca());
+      break;
+    default:
+      VIXL_UNREACHABLE();
+  }
+}
+
+void Simulator::SimulateNEONDotProdByElement(const Instruction* instr) {
+  VectorFormat vform = instr->GetNEONQ() ? kFormat4S : kFormat2S;
+
+  SimVRegister& rd = ReadVRegister(instr->GetRd());
+  SimVRegister& rn = ReadVRegister(instr->GetRn());
+  SimVRegister& rm = ReadVRegister(instr->GetRm());
+  int index = (instr->GetNEONH() << 1) | instr->GetNEONL();
+
+  SimVRegister temp;
+  // NEON indexed `dot` allows the index value exceed the register size.
+  // Promote the format to Q-sized vector format before the duplication.
+  dup_elements_to_segments(VectorFormatFillQ(vform), temp, rm, index);
+
+  switch (form_hash_) {
+    case Hash("sdot_asimdelem_d"):
+      sdot(vform, rd, rn, temp);
+      break;
+    case Hash("udot_asimdelem_d"):
+      udot(vform, rd, rn, temp);
+      break;
+    case Hash("sudot_asimdelem_d"):
+      usdot(vform, rd, temp, rn);
+      break;
+    case Hash("usdot_asimdelem_d"):
+      usdot(vform, rd, rn, temp);
+      break;
+  }
+}
+
+void Simulator::VisitNEONByIndexedElement(const Instruction* instr) {
+  NEONFormatDecoder nfd(instr);
+  VectorFormat vform = nfd.GetVectorFormat();
+
+  SimVRegister& rd = ReadVRegister(instr->GetRd());
+  SimVRegister& rn = ReadVRegister(instr->GetRn());
+
+  int rm_reg = instr->GetRm();
+  int index = (instr->GetNEONH() << 1) | instr->GetNEONL();
+
+  if ((vform == kFormat4H) || (vform == kFormat8H)) {
+    rm_reg &= 0xf;
+    index = (index << 1) | instr->GetNEONM();
+  }
+
+  SimVRegister& rm = ReadVRegister(rm_reg);
+
+  switch (form_hash_) {
+    case Hash("mul_asimdelem_r"):
+      mul(vform, rd, rn, rm, index);
+      break;
+    case Hash("mla_asimdelem_r"):
+      mla(vform, rd, rn, rm, index);
+      break;
+    case Hash("mls_asimdelem_r"):
+      mls(vform, rd, rn, rm, index);
+      break;
+    case Hash("sqdmulh_asimdelem_r"):
+      sqdmulh(vform, rd, rn, rm, index);
+      break;
+    case Hash("sqrdmulh_asimdelem_r"):
+      sqrdmulh(vform, rd, rn, rm, index);
+      break;
+    case Hash("sqrdmlah_asimdelem_r"):
+      sqrdmlah(vform, rd, rn, rm, index);
+      break;
+    case Hash("sqrdmlsh_asimdelem_r"):
+      sqrdmlsh(vform, rd, rn, rm, index);
+      break;
+  }
 }
 
 
@@ -11266,12 +11334,15 @@ void Simulator::VisitSVEIntMulAddUnpredicated(const Instruction* instr) {
   SimVRegister& zn = ReadVRegister(instr->GetRn());
   SimVRegister& zm = ReadVRegister(instr->GetRm());
 
-  switch (instr->Mask(SVEIntMulAddUnpredicatedMask)) {
-    case SDOT_z_zzz:
+  switch (form_hash_) {
+    case Hash("sdot_z_zzz"):
       sdot(vform, zda, zn, zm);
       break;
-    case UDOT_z_zzz:
+    case Hash("udot_z_zzz"):
       udot(vform, zda, zn, zm);
+      break;
+    case Hash("usdot_z_zzz_s"):
+      usdot(vform, zda, zn, zm);
       break;
     default:
       VIXL_UNIMPLEMENTED();
@@ -12107,69 +12178,59 @@ void Simulator::VisitSVEContiguousNonTemporalLoad_ScalarPlusScalar(
                           /* is_signed = */ false);
 }
 
-void Simulator::VisitSVELoadAndBroadcastQuadword_ScalarPlusImm(
+void Simulator::VisitSVELoadAndBroadcastQOWord_ScalarPlusImm(
     const Instruction* instr) {
   SimVRegister& zt = ReadVRegister(instr->GetRt());
   SimPRegister& pg = ReadPRegister(instr->GetPgLow8());
+
+  uint64_t dwords = 2;
+  VectorFormat vform_dst = kFormatVnQ;
+  if ((form_hash_ == Hash("ld1rob_z_p_bi_u8")) ||
+      (form_hash_ == Hash("ld1roh_z_p_bi_u16")) ||
+      (form_hash_ == Hash("ld1row_z_p_bi_u32")) ||
+      (form_hash_ == Hash("ld1rod_z_p_bi_u64"))) {
+    dwords = 4;
+    vform_dst = kFormatVnO;
+  }
 
   uint64_t addr = ReadXRegister(instr->GetRn(), Reg31IsStackPointer);
-  uint64_t offset = instr->ExtractSignedBits(19, 16) * 16;
+  uint64_t offset =
+      instr->ExtractSignedBits(19, 16) * dwords * kDRegSizeInBytes;
+  int msz = instr->ExtractBits(24, 23);
+  VectorFormat vform = SVEFormatFromLaneSizeInBytesLog2(msz);
 
-  VectorFormat vform = kFormatUndefined;
-  switch (instr->Mask(SVELoadAndBroadcastQuadword_ScalarPlusImmMask)) {
-    case LD1RQB_z_p_bi_u8:
-      vform = kFormatVnB;
-      break;
-    case LD1RQD_z_p_bi_u64:
-      vform = kFormatVnD;
-      break;
-    case LD1RQH_z_p_bi_u16:
-      vform = kFormatVnH;
-      break;
-    case LD1RQW_z_p_bi_u32:
-      vform = kFormatVnS;
-      break;
-    default:
-      addr = offset = 0;
-      break;
+  for (unsigned i = 0; i < dwords; i++) {
+    ld1(kFormatVnD, zt, i, addr + offset + (i * kDRegSizeInBytes));
   }
-  ld1(kFormat16B, zt, addr + offset);
   mov_zeroing(vform, zt, pg, zt);
-  dup_element(kFormatVnQ, zt, zt, 0);
+  dup_element(vform_dst, zt, zt, 0);
 }
 
-void Simulator::VisitSVELoadAndBroadcastQuadword_ScalarPlusScalar(
+void Simulator::VisitSVELoadAndBroadcastQOWord_ScalarPlusScalar(
     const Instruction* instr) {
   SimVRegister& zt = ReadVRegister(instr->GetRt());
   SimPRegister& pg = ReadPRegister(instr->GetPgLow8());
+
+  uint64_t bytes = 16;
+  VectorFormat vform_dst = kFormatVnQ;
+  if ((form_hash_ == Hash("ld1rob_z_p_br_contiguous")) ||
+      (form_hash_ == Hash("ld1roh_z_p_br_contiguous")) ||
+      (form_hash_ == Hash("ld1row_z_p_br_contiguous")) ||
+      (form_hash_ == Hash("ld1rod_z_p_br_contiguous"))) {
+    bytes = 32;
+    vform_dst = kFormatVnO;
+  }
 
   uint64_t addr = ReadXRegister(instr->GetRn(), Reg31IsStackPointer);
   uint64_t offset = ReadXRegister(instr->GetRm());
-
-  VectorFormat vform = kFormatUndefined;
-  switch (instr->Mask(SVELoadAndBroadcastQuadword_ScalarPlusScalarMask)) {
-    case LD1RQB_z_p_br_contiguous:
-      vform = kFormatVnB;
-      break;
-    case LD1RQD_z_p_br_contiguous:
-      vform = kFormatVnD;
-      offset <<= 3;
-      break;
-    case LD1RQH_z_p_br_contiguous:
-      vform = kFormatVnH;
-      offset <<= 1;
-      break;
-    case LD1RQW_z_p_br_contiguous:
-      vform = kFormatVnS;
-      offset <<= 2;
-      break;
-    default:
-      addr = offset = 0;
-      break;
+  int msz = instr->ExtractBits(24, 23);
+  VectorFormat vform = SVEFormatFromLaneSizeInBytesLog2(msz);
+  offset <<= msz;
+  for (unsigned i = 0; i < bytes; i++) {
+    ld1(kFormatVnB, zt, i, addr + offset + i);
   }
-  ld1(kFormat16B, zt, addr + offset);
   mov_zeroing(vform, zt, pg, zt);
-  dup_element(kFormatVnQ, zt, zt, 0);
+  dup_element(vform_dst, zt, zt, 0);
 }
 
 void Simulator::VisitSVELoadMultipleStructures_ScalarPlusImm(
@@ -12717,35 +12778,27 @@ void Simulator::VisitSVEMulIndex(const Instruction* instr) {
   VectorFormat vform = instr->GetSVEVectorFormat();
   SimVRegister& zda = ReadVRegister(instr->GetRd());
   SimVRegister& zn = ReadVRegister(instr->GetRn());
+  std::pair<int, int> zm_and_index = instr->GetSVEMulZmAndIndex();
+  SimVRegister zm = ReadVRegister(zm_and_index.first);
+  int index = zm_and_index.second;
 
-  switch (instr->Mask(SVEMulIndexMask)) {
-    case SDOT_z_zzzi_d:
-      sdot(vform,
-           zda,
-           zn,
-           ReadVRegister(instr->ExtractBits(19, 16)),
-           instr->ExtractBit(20));
+  SimVRegister temp;
+  dup_elements_to_segments(vform, temp, zm, index);
+
+  switch (form_hash_) {
+    case Hash("sdot_z_zzzi_d"):
+    case Hash("sdot_z_zzzi_s"):
+      sdot(vform, zda, zn, temp);
       break;
-    case SDOT_z_zzzi_s:
-      sdot(vform,
-           zda,
-           zn,
-           ReadVRegister(instr->ExtractBits(18, 16)),
-           instr->ExtractBits(20, 19));
+    case Hash("udot_z_zzzi_d"):
+    case Hash("udot_z_zzzi_s"):
+      udot(vform, zda, zn, temp);
       break;
-    case UDOT_z_zzzi_d:
-      udot(vform,
-           zda,
-           zn,
-           ReadVRegister(instr->ExtractBits(19, 16)),
-           instr->ExtractBit(20));
+    case Hash("sudot_z_zzzi_s"):
+      usdot(vform, zda, temp, zn);
       break;
-    case UDOT_z_zzzi_s:
-      udot(vform,
-           zda,
-           zn,
-           ReadVRegister(instr->ExtractBits(18, 16)),
-           instr->ExtractBits(20, 19));
+    case Hash("usdot_z_zzzi_s"):
+      usdot(vform, zda, zn, temp);
       break;
     default:
       VIXL_UNIMPLEMENTED();

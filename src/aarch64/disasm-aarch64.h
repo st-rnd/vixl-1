@@ -191,6 +191,38 @@ class Disassembler : public DecoderVisitor {
   void DisassembleSVEFlogb(const Instruction* instr);
   void DisassembleSVEFPPair(const Instruction* instr);
 
+  void DisassembleNoArgs(const Instruction* instr);
+
+  void DisassembleNEONMulByElementLong(const Instruction* instr);
+  void DisassembleNEONDotProdByElement(const Instruction* instr);
+  void DisassembleNEONFPMulByElement(const Instruction* instr);
+  void DisassembleNEONHalfFPMulByElement(const Instruction* instr);
+  void DisassembleNEONFPMulByElementLong(const Instruction* instr);
+  void DisassembleNEONComplexMulByElement(const Instruction* instr);
+  void DisassembleNEON2RegLogical(const Instruction* instr);
+  void DisassembleNEON2RegExtract(const Instruction* instr);
+  void DisassembleNEON2RegAddlp(const Instruction* instr);
+  void DisassembleNEON2RegCompare(const Instruction* instr);
+  void DisassembleNEON2RegFPCompare(const Instruction* instr);
+  void DisassembleNEON2RegFPConvert(const Instruction* instr);
+  void DisassembleNEON2RegFP(const Instruction* instr);
+  void DisassembleNEON3SameLogical(const Instruction* instr);
+  void DisassembleNEON3SameFHM(const Instruction* instr);
+  void DisassembleNEON3SameNoD(const Instruction* instr);
+  void DisassembleNEONShiftLeftLongImm(const Instruction* instr);
+  void DisassembleNEONShiftRightImm(const Instruction* instr);
+  void DisassembleNEONShiftRightNarrowImm(const Instruction* instr);
+  void DisassembleNEONScalarSatMulLongIndex(const Instruction* instr);
+  void DisassembleNEONFPScalarMulIndex(const Instruction* instr);
+  void DisassembleNEONFPScalar3Same(const Instruction* instr);
+  void DisassembleNEONScalar3SameOnlyD(const Instruction* instr);
+  void DisassembleNEONFPAcrossLanes(const Instruction* instr);
+  void DisassembleNEONFP16AcrossLanes(const Instruction* instr);
+  void DisassembleNEONScalarShiftImmOnlyD(const Instruction* instr);
+  void DisassembleNEONScalarShiftRightNarrowImm(const Instruction* instr);
+  void DisassembleNEONScalar2RegMiscOnlyD(const Instruction* instr);
+  void DisassembleNEONFPScalar2RegMisc(const Instruction* instr);
+
   void Format(const Instruction* instr,
               const char* mnemonic,
               const char* format0,

@@ -1153,7 +1153,7 @@ void MacroAssembler::SVELoadStoreScalarImmHelper(const CPURegister& rt,
 }
 
 template <typename Tg, typename Tf>
-void MacroAssembler::SVELoadStoreScalarImmHelper(
+void MacroAssembler::SVELoadStoreNTBroadcastQOHelper(
     const ZRegister& zt,
     const Tg& pg,
     const SVEMemOperand& addr,
@@ -1170,6 +1170,13 @@ void MacroAssembler::SVELoadStoreScalarImmHelper(
        IsIntN(imm_bits, addr.GetImmediateOffset() / imm_divisor) &&
        ((addr.GetImmediateOffset() % imm_divisor) == 0) &&
        (addr.GetOffsetModifier() == supported_modifier))) {
+    SingleEmissionCheckScope guard(this);
+    (this->*fn)(zt, pg, addr);
+    return;
+  }
+
+  if (addr.IsScalarPlusScalar() && !addr.GetScalarOffset().IsZero() &&
+      addr.IsEquivalentToLSL(zt.GetLaneSizeInBytesLog2())) {
     SingleEmissionCheckScope guard(this);
     (this->*fn)(zt, pg, addr);
     return;
@@ -1491,61 +1498,28 @@ void MacroAssembler::Ldff1sw(const ZRegister& zt,
                   static_cast<SVELoad1Fn>(&Assembler::ldff1sw));
 }
 
-void MacroAssembler::Ld1rqb(const ZRegister& zt,
-                            const PRegisterZ& pg,
-                            const SVEMemOperand& addr) {
-  VIXL_ASSERT(allow_macro_instructions_);
-  SVELoadStoreScalarImmHelper(zt,
-                              pg,
-                              addr,
-                              &MacroAssembler::ld1rqb,
-                              4,
-                              4,
-                              NO_SVE_OFFSET_MODIFIER,
-                              -1);
-}
+#define VIXL_SVE_LD1R_LIST(V) \
+  V(qb, 4) V(qh, 4) V(qw, 4) V(qd, 4) V(ob, 5) V(oh, 5) V(ow, 5) V(od, 5)
 
-void MacroAssembler::Ld1rqd(const ZRegister& zt,
-                            const PRegisterZ& pg,
-                            const SVEMemOperand& addr) {
-  VIXL_ASSERT(allow_macro_instructions_);
-  SVELoadStoreScalarImmHelper(zt,
-                              pg,
-                              addr,
-                              &MacroAssembler::ld1rqd,
-                              4,
-                              4,
-                              NO_SVE_OFFSET_MODIFIER,
-                              -1);
-}
+#define VIXL_DEFINE_MASM_FUNC(SZ, SH)                          \
+  void MacroAssembler::Ld1r##SZ(const ZRegister& zt,           \
+                                const PRegisterZ& pg,          \
+                                const SVEMemOperand& addr) {   \
+    VIXL_ASSERT(allow_macro_instructions_);                    \
+    SVELoadStoreNTBroadcastQOHelper(zt,                        \
+                                    pg,                        \
+                                    addr,                      \
+                                    &MacroAssembler::ld1r##SZ, \
+                                    4,                         \
+                                    SH,                        \
+                                    NO_SVE_OFFSET_MODIFIER,    \
+                                    -1);                       \
+  }
 
-void MacroAssembler::Ld1rqh(const ZRegister& zt,
-                            const PRegisterZ& pg,
-                            const SVEMemOperand& addr) {
-  VIXL_ASSERT(allow_macro_instructions_);
-  SVELoadStoreScalarImmHelper(zt,
-                              pg,
-                              addr,
-                              &MacroAssembler::ld1rqh,
-                              4,
-                              4,
-                              NO_SVE_OFFSET_MODIFIER,
-                              -1);
-}
+VIXL_SVE_LD1R_LIST(VIXL_DEFINE_MASM_FUNC)
 
-void MacroAssembler::Ld1rqw(const ZRegister& zt,
-                            const PRegisterZ& pg,
-                            const SVEMemOperand& addr) {
-  VIXL_ASSERT(allow_macro_instructions_);
-  SVELoadStoreScalarImmHelper(zt,
-                              pg,
-                              addr,
-                              &MacroAssembler::ld1rqw,
-                              4,
-                              4,
-                              NO_SVE_OFFSET_MODIFIER,
-                              -1);
-}
+#undef VIXL_DEFINE_MASM_FUNC
+#undef VIXL_SVE_LD1R_LIST
 
 void MacroAssembler::Ldnt1b(const ZRegister& zt,
                             const PRegisterZ& pg,
@@ -1555,13 +1529,13 @@ void MacroAssembler::Ldnt1b(const ZRegister& zt,
     SingleEmissionCheckScope guard(this);
     ldnt1b(zt, pg, addr);
   } else {
-    SVELoadStoreScalarImmHelper(zt,
-                                pg,
-                                addr,
-                                &MacroAssembler::ldnt1b,
-                                4,
-                                0,
-                                SVE_MUL_VL);
+    SVELoadStoreNTBroadcastQOHelper(zt,
+                                    pg,
+                                    addr,
+                                    &MacroAssembler::ldnt1b,
+                                    4,
+                                    0,
+                                    SVE_MUL_VL);
   }
 }
 
@@ -1573,13 +1547,13 @@ void MacroAssembler::Ldnt1d(const ZRegister& zt,
     SingleEmissionCheckScope guard(this);
     ldnt1d(zt, pg, addr);
   } else {
-    SVELoadStoreScalarImmHelper(zt,
-                                pg,
-                                addr,
-                                &MacroAssembler::ldnt1d,
-                                4,
-                                0,
-                                SVE_MUL_VL);
+    SVELoadStoreNTBroadcastQOHelper(zt,
+                                    pg,
+                                    addr,
+                                    &MacroAssembler::ldnt1d,
+                                    4,
+                                    0,
+                                    SVE_MUL_VL);
   }
 }
 
@@ -1591,13 +1565,13 @@ void MacroAssembler::Ldnt1h(const ZRegister& zt,
     SingleEmissionCheckScope guard(this);
     ldnt1h(zt, pg, addr);
   } else {
-    SVELoadStoreScalarImmHelper(zt,
-                                pg,
-                                addr,
-                                &MacroAssembler::ldnt1h,
-                                4,
-                                0,
-                                SVE_MUL_VL);
+    SVELoadStoreNTBroadcastQOHelper(zt,
+                                    pg,
+                                    addr,
+                                    &MacroAssembler::ldnt1h,
+                                    4,
+                                    0,
+                                    SVE_MUL_VL);
   }
 }
 
@@ -1609,13 +1583,13 @@ void MacroAssembler::Ldnt1w(const ZRegister& zt,
     SingleEmissionCheckScope guard(this);
     ldnt1w(zt, pg, addr);
   } else {
-    SVELoadStoreScalarImmHelper(zt,
-                                pg,
-                                addr,
-                                &MacroAssembler::ldnt1w,
-                                4,
-                                0,
-                                SVE_MUL_VL);
+    SVELoadStoreNTBroadcastQOHelper(zt,
+                                    pg,
+                                    addr,
+                                    &MacroAssembler::ldnt1w,
+                                    4,
+                                    0,
+                                    SVE_MUL_VL);
   }
 }
 
@@ -1627,13 +1601,13 @@ void MacroAssembler::Stnt1b(const ZRegister& zt,
     SingleEmissionCheckScope guard(this);
     stnt1b(zt, pg, addr);
   } else {
-    SVELoadStoreScalarImmHelper(zt,
-                                pg,
-                                addr,
-                                &MacroAssembler::stnt1b,
-                                4,
-                                0,
-                                SVE_MUL_VL);
+    SVELoadStoreNTBroadcastQOHelper(zt,
+                                    pg,
+                                    addr,
+                                    &MacroAssembler::stnt1b,
+                                    4,
+                                    0,
+                                    SVE_MUL_VL);
   }
 }
 void MacroAssembler::Stnt1d(const ZRegister& zt,
@@ -1644,13 +1618,13 @@ void MacroAssembler::Stnt1d(const ZRegister& zt,
     SingleEmissionCheckScope guard(this);
     stnt1d(zt, pg, addr);
   } else {
-    SVELoadStoreScalarImmHelper(zt,
-                                pg,
-                                addr,
-                                &MacroAssembler::stnt1d,
-                                4,
-                                0,
-                                SVE_MUL_VL);
+    SVELoadStoreNTBroadcastQOHelper(zt,
+                                    pg,
+                                    addr,
+                                    &MacroAssembler::stnt1d,
+                                    4,
+                                    0,
+                                    SVE_MUL_VL);
   }
 }
 void MacroAssembler::Stnt1h(const ZRegister& zt,
@@ -1661,13 +1635,13 @@ void MacroAssembler::Stnt1h(const ZRegister& zt,
     SingleEmissionCheckScope guard(this);
     stnt1h(zt, pg, addr);
   } else {
-    SVELoadStoreScalarImmHelper(zt,
-                                pg,
-                                addr,
-                                &MacroAssembler::stnt1h,
-                                4,
-                                0,
-                                SVE_MUL_VL);
+    SVELoadStoreNTBroadcastQOHelper(zt,
+                                    pg,
+                                    addr,
+                                    &MacroAssembler::stnt1h,
+                                    4,
+                                    0,
+                                    SVE_MUL_VL);
   }
 }
 void MacroAssembler::Stnt1w(const ZRegister& zt,
@@ -1678,22 +1652,22 @@ void MacroAssembler::Stnt1w(const ZRegister& zt,
     SingleEmissionCheckScope guard(this);
     stnt1w(zt, pg, addr);
   } else {
-    SVELoadStoreScalarImmHelper(zt,
-                                pg,
-                                addr,
-                                &MacroAssembler::stnt1w,
-                                4,
-                                0,
-                                SVE_MUL_VL);
+    SVELoadStoreNTBroadcastQOHelper(zt,
+                                    pg,
+                                    addr,
+                                    &MacroAssembler::stnt1w,
+                                    4,
+                                    0,
+                                    SVE_MUL_VL);
   }
 }
 
-void MacroAssembler::SVESdotUdotIndexHelper(ZZZImmFn fn,
-                                            const ZRegister& zd,
-                                            const ZRegister& za,
-                                            const ZRegister& zn,
-                                            const ZRegister& zm,
-                                            int index) {
+void MacroAssembler::SVEDotIndexHelper(ZZZImmFn fn,
+                                       const ZRegister& zd,
+                                       const ZRegister& za,
+                                       const ZRegister& zn,
+                                       const ZRegister& zm,
+                                       int index) {
   if (zd.Aliases(za)) {
     // zda = zda + (zn . zm)
     SingleEmissionCheckScope guard(this);
@@ -1862,7 +1836,8 @@ void MacroAssembler::AbsoluteDifferenceAccumulate(Int3ArithFn fn,
   V(Fmmla, fmmla, FourRegDestructiveHelper)         \
   V(Smmla, smmla, FourRegDestructiveHelper)         \
   V(Ummla, ummla, FourRegDestructiveHelper)         \
-  V(Usmmla, usmmla, FourRegDestructiveHelper)
+  V(Usmmla, usmmla, FourRegDestructiveHelper)       \
+  V(Usdot, usdot, FourRegDestructiveHelper)
 
 #define VIXL_DEFINE_MASM_FUNC(MASMFN, ASMFN, HELPER) \
   void MacroAssembler::MASMFN(const ZRegister& zd,   \
@@ -1917,7 +1892,7 @@ void MacroAssembler::Sdot(const ZRegister& zd,
                           const ZRegister& zm,
                           int index) {
   VIXL_ASSERT(allow_macro_instructions_);
-  SVESdotUdotIndexHelper(&Assembler::sdot, zd, za, zn, zm, index);
+  SVEDotIndexHelper(&Assembler::sdot, zd, za, zn, zm, index);
 }
 
 void MacroAssembler::Udot(const ZRegister& zd,
@@ -1926,7 +1901,25 @@ void MacroAssembler::Udot(const ZRegister& zd,
                           const ZRegister& zm,
                           int index) {
   VIXL_ASSERT(allow_macro_instructions_);
-  SVESdotUdotIndexHelper(&Assembler::udot, zd, za, zn, zm, index);
+  SVEDotIndexHelper(&Assembler::udot, zd, za, zn, zm, index);
+}
+
+void MacroAssembler::Sudot(const ZRegister& zd,
+                           const ZRegister& za,
+                           const ZRegister& zn,
+                           const ZRegister& zm,
+                           int index) {
+  VIXL_ASSERT(allow_macro_instructions_);
+  SVEDotIndexHelper(&Assembler::sudot, zd, za, zn, zm, index);
+}
+
+void MacroAssembler::Usdot(const ZRegister& zd,
+                           const ZRegister& za,
+                           const ZRegister& zn,
+                           const ZRegister& zm,
+                           int index) {
+  VIXL_ASSERT(allow_macro_instructions_);
+  SVEDotIndexHelper(&Assembler::usdot, zd, za, zn, zm, index);
 }
 
 void MacroAssembler::Cdot(const ZRegister& zd,

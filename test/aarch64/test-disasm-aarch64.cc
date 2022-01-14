@@ -2941,8 +2941,8 @@ TEST(barriers) {
 
   COMPARE_MACRO(Dsb(FullSystem, BarrierOther), "dsb sy (0b1100)");
   COMPARE_MACRO(Dsb(InnerShareable, BarrierOther), "dsb sy (0b1000)");
-  COMPARE_MACRO(Dsb(NonShareable, BarrierOther), "dsb sy (0b0100)");
-  COMPARE_MACRO(Dsb(OuterShareable, BarrierOther), "dsb sy (0b0000)");
+  COMPARE_MACRO(Dsb(NonShareable, BarrierOther), "pssbb");
+  COMPARE_MACRO(Dsb(OuterShareable, BarrierOther), "ssbb");
 
   // ISB
   COMPARE_MACRO(Isb(), "isb");
@@ -3043,7 +3043,7 @@ TEST(hint) {
   COMPARE(hint(WFI), "wfi");
   COMPARE(hint(SEV), "sev");
   COMPARE(hint(SEVL), "sevl");
-  COMPARE(hint(6), "hint #6");
+  COMPARE(hint(6), "dgh");
   COMPARE(hint(ESB), "esb");
   COMPARE(hint(CSDB), "csdb");
   COMPARE(hint(42), "hint #42");
@@ -3285,12 +3285,12 @@ TEST(architecture_features) {
   // ARMv8.1 - RDM
   COMPARE_PREFIX(dci(0x2e008400), "sqrdmlah");  // SQRDMLAH_asimdsame2_only
   COMPARE_PREFIX(dci(0x2e008c00), "sqrdmlsh");  // SQRDMLSH_asimdsame2_only
-  COMPARE_PREFIX(dci(0x2f00d000), "sqrdmlah");  // SQRDMLAH_asimdelem_R
-  COMPARE_PREFIX(dci(0x2f00f000), "sqrdmlsh");  // SQRDMLSH_asimdelem_R
+  COMPARE_PREFIX(dci(0x2f40d000), "sqrdmlah");  // SQRDMLAH_asimdelem_R
+  COMPARE_PREFIX(dci(0x2f40f000), "sqrdmlsh");  // SQRDMLSH_asimdelem_R
   COMPARE_PREFIX(dci(0x7e008400), "sqrdmlah");  // SQRDMLAH_asisdsame2_only
   COMPARE_PREFIX(dci(0x7e008c00), "sqrdmlsh");  // SQRDMLSH_asisdsame2_only
-  COMPARE_PREFIX(dci(0x7f00d000), "sqrdmlah");  // SQRDMLAH_asisdelem_R
-  COMPARE_PREFIX(dci(0x7f00f000), "sqrdmlsh");  // SQRDMLSH_asisdelem_R
+  COMPARE_PREFIX(dci(0x7f40d000), "sqrdmlah");  // SQRDMLAH_asisdelem_R
+  COMPARE_PREFIX(dci(0x7f40f000), "sqrdmlsh");  // SQRDMLSH_asisdelem_R
 
   // ARMv8.2 - DotProd
   COMPARE_PREFIX(dci(0x0e009400), "sdot");  // SDOT_asimdsame2_D
@@ -3388,8 +3388,8 @@ TEST(architecture_features) {
   COMPARE_PREFIX(dci(0x2e21b800), "fcvtmu");   // FCVTMU_asimdmisc_R
   COMPARE_PREFIX(dci(0x2e21c800), "fcvtau");   // FCVTAU_asimdmisc_R
   COMPARE_PREFIX(dci(0x2e21d800), "ucvtf");    // UCVTF_asimdmisc_R
-  COMPARE_PREFIX(dci(0x2e30c800), "fmaxnmv");  // FMAXNMV_asimdall_only_SD
-  COMPARE_PREFIX(dci(0x2e30f800), "fmaxv");    // FMAXV_asimdall_only_SD
+  COMPARE_PREFIX(dci(0x6e30c800), "fmaxnmv");  // FMAXNMV_asimdall_only_SD
+  COMPARE_PREFIX(dci(0x6e30f800), "fmaxv");    // FMAXV_asimdall_only_SD
   COMPARE_PREFIX(dci(0x2e400400), "fmaxnmp");  // FMAXNMP_asimdsamefp16_only
   COMPARE_PREFIX(dci(0x2e401400), "faddp");    // FADDP_asimdsamefp16_only
   COMPARE_PREFIX(dci(0x2e401c00), "fmul");     // FMUL_asimdsamefp16_only
@@ -3416,8 +3416,8 @@ TEST(architecture_features) {
   COMPARE_PREFIX(dci(0x2ea1b800), "fcvtzu");   // FCVTZU_asimdmisc_R
   COMPARE_PREFIX(dci(0x2ea1d800), "frsqrte");  // FRSQRTE_asimdmisc_R
   COMPARE_PREFIX(dci(0x2ea1f800), "fsqrt");    // FSQRT_asimdmisc_R
-  COMPARE_PREFIX(dci(0x2eb0c800), "fminnmv");  // FMINNMV_asimdall_only_SD
-  COMPARE_PREFIX(dci(0x2eb0f800), "fminv");    // FMINV_asimdall_only_SD
+  COMPARE_PREFIX(dci(0x6eb0c800), "fminnmv");  // FMINNMV_asimdall_only_SD
+  COMPARE_PREFIX(dci(0x6eb0f800), "fminv");    // FMINV_asimdall_only_SD
   COMPARE_PREFIX(dci(0x2ec00400), "fminnmp");  // FMINNMP_asimdsamefp16_only
   COMPARE_PREFIX(dci(0x2ec01400), "fabd");     // FABD_asimdsamefp16_only
   COMPARE_PREFIX(dci(0x2ec02400), "fcmgt");    // FCMGT_asimdsamefp16_only
@@ -3549,10 +3549,10 @@ TEST(architecture_features) {
   // COMPARE_PREFIX(dci(0xd503223f), "psb");   // PSB_HC_hints
 
   // ARMv8.3 - FCMA
-  COMPARE_PREFIX(dci(0x2e00c400), "fcmla");  // FCMLA_asimdsame2_C
+  COMPARE_PREFIX(dci(0x2e40c400), "fcmla");  // FCMLA_asimdsame2_C
   COMPARE_PREFIX(dci(0x2e00e400), "fcadd");  // FCADD_asimdsame2_C
   COMPARE_PREFIX(dci(0x2f401000), "fcmla");  // FCMLA_asimdelem_C_H
-  COMPARE_PREFIX(dci(0x2f801000), "fcmla");  // FCMLA_asimdelem_C_S
+  COMPARE_PREFIX(dci(0x6f801000), "fcmla");  // FCMLA_asimdelem_C_S
 
   // ARMv8.3 - JSCVT
   COMPARE_PREFIX(dci(0x1e7e0000), "fjcvtzs");  // FJCVTZS_32D_float2int
@@ -3700,12 +3700,12 @@ TEST(architecture_features) {
   // COMPARE_PREFIX(dci(0xd50320df), "dgh");   // DGH_HI_hints
 
   // ARMv8.6 - I8MM
-  // COMPARE_PREFIX(dci(0x0e809c00), "usdot");   // USDOT_asimdsame2_D
-  // COMPARE_PREFIX(dci(0x0f00f000), "sudot");   // SUDOT_asimdelem_D
-  // COMPARE_PREFIX(dci(0x0f80f000), "usdot");   // USDOT_asimdelem_D
-  // COMPARE_PREFIX(dci(0x4e80a400), "smmla");   // SMMLA_asimdsame2_G
-  // COMPARE_PREFIX(dci(0x4e80ac00), "usmmla");   // USMMLA_asimdsame2_G
-  // COMPARE_PREFIX(dci(0x6e80a400), "ummla");   // UMMLA_asimdsame2_G
+  COMPARE_PREFIX(dci(0x0e809c00), "usdot");   // USDOT_asimdsame2_D
+  COMPARE_PREFIX(dci(0x0f00f000), "sudot");   // SUDOT_asimdelem_D
+  COMPARE_PREFIX(dci(0x0f80f000), "usdot");   // USDOT_asimdelem_D
+  COMPARE_PREFIX(dci(0x4e80a400), "smmla");   // SMMLA_asimdsame2_G
+  COMPARE_PREFIX(dci(0x4e80ac00), "usmmla");  // USMMLA_asimdsame2_G
+  COMPARE_PREFIX(dci(0x6e80a400), "ummla");   // UMMLA_asimdsame2_G
 
   // ARMv8.7 - LS64
   // COMPARE_PREFIX(dci(0xf83f9000), "st64b");   // ST64B_64L_memop

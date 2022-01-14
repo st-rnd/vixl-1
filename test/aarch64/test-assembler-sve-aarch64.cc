@@ -5472,6 +5472,9 @@ TEST_SVE(sve_addpl) {
 }
 
 TEST_SVE(sve_calculate_sve_address) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+
   // Shadow the `MacroAssembler` type so that the test macros work without
   // modification.
   typedef CalculateSVEAddressMacroAssembler MacroAssembler;
@@ -5581,6 +5584,7 @@ TEST_SVE(sve_calculate_sve_address) {
     ASSERT_EQUAL_64(0xabcd404400000000 - 48, x28);
     ASSERT_EQUAL_64(0xabcd505500000000 - (48 << 4), x29);
   }
+#pragma GCC diagnostic pop
 }
 
 TEST_SVE(sve_permute_vector_unpredicated) {
@@ -11620,19 +11624,19 @@ static void SdotUdotHelper(Test* config,
                     const ZRegister& za,
                     const ZRegister& zn,
                     const ZRegister& zm,
-                    bool is_signed,
-                    int index) {
-    if (is_signed) {
-      if (index < 0) {
+                    bool is_signed_fn,
+                    int index_fn) {
+    if (is_signed_fn) {
+      if (index_fn < 0) {
         __ Sdot(zd, za, zn, zm);
       } else {
-        __ Sdot(zd, za, zn, zm, index);
+        __ Sdot(zd, za, zn, zm, index_fn);
       }
     } else {
-      if (index < 0) {
+      if (index_fn < 0) {
         __ Udot(zd, za, zn, zm);
       } else {
-        __ Udot(zd, za, zn, zm, index);
+        __ Udot(zd, za, zn, zm, index_fn);
       }
     }
   };
@@ -19672,6 +19676,60 @@ TEST_SVE(neon_matmul) {
   }
 }
 
+TEST_SVE(sudot_usdot) {
+  SVE_SETUP_WITH_FEATURES(CPUFeatures::kSVE,
+                          CPUFeatures::kSVE2,
+                          CPUFeatures::kSVEI8MM);
+
+  START();
+  __ Ptrue(p0.VnB());
+  __ Index(z0.VnS(), -424242, 77777);
+  __ Index(z1.VnB(), 127, -1);
+  __ Sqabs(z1.VnB(), p0.Merging(), z1.VnB());
+  __ Index(z2.VnB(), 0, 1);
+  __ Sqabs(z2.VnB(), p0.Merging(), z2.VnB());
+  __ Index(z3.VnB(), -128, 1);
+  __ Mov(z4.VnD(), 0);
+
+  // Test Usdot against Udot/Sdot over the range of inputs where they should be
+  // equal.
+  __ Usdot(z5.VnS(), z0.VnS(), z1.VnB(), z2.VnB());
+  __ Udot(z6.VnS(), z0.VnS(), z1.VnB(), z2.VnB());
+  __ Usdot(z7.VnS(), z0.VnS(), z1.VnB(), z3.VnB());
+  __ Sdot(z8.VnS(), z0.VnS(), z1.VnB(), z3.VnB());
+
+  // Construct values which, when interpreted correctly as signed/unsigned,
+  // should give a zero result for dot product.
+  __ Mov(z10.VnS(), 0x8101ff40);  // [-127, 1, -1, 64] as signed bytes.
+  __ Mov(z11.VnS(), 0x02fe8002);  // [2, 254, 128, 2] as unsigned bytes.
+  __ Usdot(z12.VnS(), z4.VnS(), z11.VnB(), z10.VnB());
+  __ Usdot(z13.VnS(), z4.VnS(), z10.VnB(), z11.VnB());
+
+  // Construct a vector with duplicated values across segments. This allows
+  // testing indexed dot product against the already tested variant.
+  __ Mov(z14.VnS(), 1);
+  __ Mul(z15.VnS(), z14.VnS(), z3.VnS(), 1);
+
+  __ Usdot(z16.VnS(), z0.VnS(), z3.VnB(), z3.VnB(), 1);
+  __ Usdot(z17.VnS(), z0.VnS(), z3.VnB(), z15.VnB());
+  __ Sudot(z18.VnS(), z0.VnS(), z3.VnB(), z3.VnB(), 1);
+  __ Usdot(z19.VnS(), z0.VnS(), z15.VnB(), z3.VnB());
+  END();
+
+  if (CAN_RUN()) {
+    RUN();
+    ASSERT_EQUAL_SVE(z6, z5);
+    ASSERT_EQUAL_SVE(z8, z7);
+    ASSERT_EQUAL_SVE(z4, z12);
+
+    uint64_t z13_expected[] = {0xffff8200ffff8200, 0xffff8200ffff8200};
+    ASSERT_EQUAL_SVE(z13_expected, z13.VnD());
+
+    ASSERT_EQUAL_SVE(z17, z16);
+    ASSERT_EQUAL_SVE(z19, z18);
+  }
+}
+
 // Manually constructed simulator test to avoid creating a VL128 variant.
 
 #ifdef VIXL_INCLUDE_SIMULATOR_AARCH64
@@ -19790,6 +19848,134 @@ Test* test_sve_fmatmul_list[] =
      Test::MakeSVETest(2048,
                        "AARCH64_ASM_sve_fmatmul_vl2048",
                        &Testsve_fmatmul)};
+
+void Testsve_ld1ro(Test* config) {
+  SVE_SETUP_WITH_FEATURES(CPUFeatures::kSVE, CPUFeatures::kSVEF64MM);
+  START();
+
+  int data_size = (kQRegSizeInBytes + 128) * 4;
+  uint8_t* data = new uint8_t[data_size];
+  for (int i = 0; i < data_size; i++) {
+    data[i] = i & 0xff;
+  }
+
+  // Set the base to just past half-way through the buffer so we can use
+  // negative indices.
+  __ Mov(x0, reinterpret_cast<uintptr_t>(&data[7 + data_size / 2]));
+
+  __ Index(z0.VnB(), 0, 1);
+  __ Ptrue(p0.VnB());
+  __ Cmplo(p0.VnB(), p0.Zeroing(), z0.VnB(), 4);
+  __ Pfalse(p1.VnB());
+  __ Zip1(p1.VnB(), p0.VnB(), p1.VnB());
+  __ Ptrue(p2.VnB());
+
+  __ Mov(x1, -32);
+  __ Ld1rob(z0.VnB(), p1.Zeroing(), SVEMemOperand(x0, -32));
+  __ Ld1rob(z1.VnB(), p1.Zeroing(), SVEMemOperand(x0, x1));
+
+  __ Mov(x1, 64 / 2);
+  __ Ld1roh(z2.VnH(), p2.Zeroing(), SVEMemOperand(x0, 64));
+  __ Ld1roh(z3.VnH(), p2.Zeroing(), SVEMemOperand(x0, x1, LSL, 1));
+
+  __ Mov(x1, -96 / 4);
+  __ Ld1row(z4.VnS(), p2.Zeroing(), SVEMemOperand(x0, -96));
+  __ Ld1row(z5.VnS(), p2.Zeroing(), SVEMemOperand(x0, x1, LSL, 2));
+
+  __ Mov(x1, 128 / 8);
+  __ Ld1rod(z6.VnD(), p2.Zeroing(), SVEMemOperand(x0, 128));
+  __ Ld1rod(z7.VnD(), p2.Zeroing(), SVEMemOperand(x0, x1, LSL, 3));
+
+  // Check that all 256-bit segments match by rotating the vector by one
+  // segment, eoring, and orring across the vector.
+  __ Dup(z11.VnQ(), z0.VnQ(), 2);
+  __ Mov(z8, z0);
+  __ Ext(z8.VnB(), z8.VnB(), z8.VnB(), 32);
+  __ Eor(z8.VnB(), z8.VnB(), z0.VnB());
+  __ Orv(b9, p2, z8.VnB());
+
+  __ Mov(z8, z2);
+  __ Ext(z8.VnB(), z8.VnB(), z8.VnB(), 32);
+  __ Eor(z8.VnB(), z8.VnB(), z2.VnB());
+  __ Orv(b8, p2, z8.VnB());
+  __ Orr(z9, z9, z8);
+
+  __ Mov(z8, z4);
+  __ Ext(z8.VnB(), z8.VnB(), z8.VnB(), 32);
+  __ Eor(z8.VnB(), z8.VnB(), z4.VnB());
+  __ Orv(b8, p2, z8.VnB());
+  __ Orr(z9, z9, z8);
+
+  __ Mov(z8, z6);
+  __ Ext(z8.VnB(), z8.VnB(), z8.VnB(), 32);
+  __ Eor(z8.VnB(), z8.VnB(), z6.VnB());
+  __ Orv(b8, p2, z8.VnB());
+  __ Orr(z9, z9, z8);
+
+  END();
+
+  if (CAN_RUN()) {
+    RUN();
+
+    int vl = core.GetSVELaneCount(kBRegSize) * 8;
+    if (vl >= 256) {
+      ASSERT_EQUAL_SVE(z0, z1);
+      ASSERT_EQUAL_SVE(z2, z3);
+      ASSERT_EQUAL_SVE(z4, z5);
+      ASSERT_EQUAL_SVE(z6, z7);
+
+      switch (vl) {
+        case 256:
+        case 2048: {
+          // Check the result of the rotate/eor sequence.
+          uint64_t expected_z9[] = {0, 0};
+          ASSERT_EQUAL_SVE(expected_z9, z9.VnD());
+          break;
+        }
+        case 384: {
+          // For non-multiple-of-256 VL, the top 128-bits must be zero, which
+          // breaks the rotate/eor sequence. Check the results explicitly.
+          uint64_t z0_expected[] = {0x0000000000000000,
+                                    0x0000000000000000,
+                                    0x0000000000000000,
+                                    0x0000000000000000,
+                                    0x0000000000000000,
+                                    0x000d000b00090007};
+          uint64_t z2_expected[] = {0x0000000000000000,
+                                    0x0000000000000000,
+                                    0x868584838281807f,
+                                    0x7e7d7c7b7a797877,
+                                    0x767574737271706f,
+                                    0x6e6d6c6b6a696867};
+          uint64_t z4_expected[] = {0x0000000000000000,
+                                    0x0000000000000000,
+                                    0xe6e5e4e3e2e1e0df,
+                                    0xdedddcdbdad9d8d7,
+                                    0xd6d5d4d3d2d1d0cf,
+                                    0xcecdcccbcac9c8c7};
+          uint64_t z6_expected[] = {0x0000000000000000,
+                                    0x0000000000000000,
+                                    0xc6c5c4c3c2c1c0bf,
+                                    0xbebdbcbbbab9b8b7,
+                                    0xb6b5b4b3b2b1b0af,
+                                    0xaeadacabaaa9a8a7};
+          ASSERT_EQUAL_SVE(z0_expected, z0.VnD());
+          ASSERT_EQUAL_SVE(z2_expected, z2.VnD());
+          ASSERT_EQUAL_SVE(z4_expected, z4.VnD());
+          ASSERT_EQUAL_SVE(z6_expected, z6.VnD());
+          break;
+        }
+        default:
+          printf("WARNING: Some tests skipped due to unexpected VL.\n");
+          break;
+      }
+    }
+  }
+}
+Test* test_sve_ld1ro_list[] =
+    {Test::MakeSVETest(256, "AARCH64_ASM_sve_ld1ro_vl256", &Testsve_ld1ro),
+     Test::MakeSVETest(384, "AARCH64_ASM_sve_ld1ro_vl384", &Testsve_ld1ro),
+     Test::MakeSVETest(2048, "AARCH64_ASM_sve_ld1ro_vl2048", &Testsve_ld1ro)};
 #endif
 
 }  // namespace aarch64
